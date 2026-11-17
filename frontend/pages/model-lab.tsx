@@ -1,3 +1,21 @@
+import { Card, SectionHeader } from "../components/ui";
+
 export default function ModelLab() {
-  return <section className="page-section"><div className="eyebrow">Research</div><h1>Model Lab</h1><p className="lede">Two independent model tracks, trained and served with explicit artifacts.</p><div className="card-grid"><article className="info-card"><h2>Word2Vec + BiLSTM</h2><p>200-dimensional embeddings feed a two-layer bidirectional LSTM with five output classes.</p></article><article className="info-card"><h2>DistilBERT</h2><p>Fine-tuned sequence classification with sigmoid probabilities across 28 GoEmotions labels.</p></article></div></section>;
+  return (
+    <section className="page-section">
+      <SectionHeader
+        description="Two independent model tracks, trained and served with explicit artifacts."
+        index="NLP-04 / MODELS"
+        title="Model Lab"
+      />
+      <div className="card-grid">
+        <Card kicker="Track A / Sequence classification" title="Word2Vec + BiLSTM">
+          <p>200-dimensional embeddings feed a two-layer bidirectional LSTM with five output classes.</p>
+        </Card>
+        <Card kicker="Track B / Multi-label" title="DistilBERT">
+          <p>Fine-tuned sequence classification with sigmoid probabilities across 28 GoEmotions labels.</p>
+        </Card>
+      </div>
+    </section>
+  );
 }

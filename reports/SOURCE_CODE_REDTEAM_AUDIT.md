@@ -359,3 +359,109 @@ Unchanged by design: F-16 (abort/timeout/retry on the analyzer requests) is stil
 ### Skills made available
 
 Found in `~/.copilot/skills` and copied into `~/.agents/skills` (the registered source): `gsap-core`, `gsap-react`, `gsap-scrolltrigger`, `gsap-timeline`, `gsap-plugins`, `gsap-utils`, `gsap-performance`, `gsap-frameworks`, `modern-web-design`, `motion-framer`. They are now advertised to the agent. None has been invoked yet — phase 04 is the first task that needs them. `impeccable`, `typescript-setup` and `typescript-update` do not exist in either collection and must not be cited as if they do.
+
+---
+
+## 15. Phase 01 — stabilisation and design system (applied and verified)
+
+Scope: deterministic tooling, repository hygiene, and a design-system layer that later page work
+must consume rather than reinvent. No endpoint, response shape, model behaviour or route changed.
+
+### Tooling and repository state
+
+| Change | Where | Effect |
+|---|---|---|
+| One lint config | `frontend/.eslintrc.json` (`next/core-web-vitals`) | `eslint.config.mts` deleted; two configs cannot disagree now |
+| Scripts `lint`, `typecheck`, `test`, `build`, `verify` | `frontend/package.json:5-17` | `verify` runs all four in order |
+| Three contract suites | `frontend/scripts/test-{motion,entry,design-system}.mjs` | motion, entry and design invariants asserted from source |
+| Root Node project removed | `package.json`, `package-lock.json`, `node_modules/` deleted | one Node project only; no parent-directory resolution leak |
+| Ignore-file corrections | `.gitignore:34-46,61-71` | `.env.example` re-included, logs/coverage/caches ignored, `*.tsbuildinfo` ignored |
+| Env documentation | `.env.example`, `frontend/.env.example` | only variables the code reads; every value has a code default |
+| `tsconfig` target `es5` to `ES2020` | `frontend/tsconfig.json:3` | matches the runtime; no emitted output |
+
+`frontend/Dockerfile` was deliberately **not** written: the Docker daemon is unavailable in this
+environment, so a build file added now could not be verified. The compose frontend service remains
+unbuildable and is documented in the README instead of being guessed at.
+
+### Design system
+
+`frontend/styles/tokens.css` and `frontend/styles/globals.css` were rewritten, and six primitives
+plus a barrel were added under `frontend/components/ui/`. The full inventory, token tables and
+usage rules are in **`frontend/DESIGN_SYSTEM.md`**; this section records only what was measured.
+
+Contrast was computed from the shipped token file by a WCAG 2.1 relative-luminance script, with
+alpha surfaces composited against `--color-surface`. **19 of 19 pairs clear 4.5:1**, the weakest
+being `--color-text-subtle` on the card surface at 5.04:1 (12 px metadata only).
+
+| Surface measured | Result |
+|---|---|
+| text on bg / surface / sunken / input | 17.41 · 16.42 · 17.72 · 16.85 |
+| muted on surface / input | 8.80 · 9.03 |
+| subtle on surface / input | 5.04 · 5.18 |
+| primary on surface / primary-ink on primary | 10.50 · 10.74 |
+| violet on surface / violet badge | 7.20 · 8.62 |
+| success / warning / danger on surface | 11.48 · 10.92 · 9.34 |
+| state text on its own callout or badge surface | 9.40 · 9.12 · 7.51 · 11.37 |
+
+Assertions that now fail the build: a hex or `rgb()` literal in `globals.css`, a `font-family`
+not sourced from a token, `transition: all`, a missing base token, a hidden sidebar status badge,
+or an `order: -1`.
+
+### Rendering evidence
+
+Both viewports were rendered in same-origin iframes (this browser runtime exposes no viewport
+emulation), against a live backend and a live `next dev` server.
+
+| Viewport | Result |
+|---|---|
+| 1440 × 1057 | sidebar 256 px sticky, hero columns 518 / 440, three card columns ≈335 px, `h1` 56 px serif, cards all 267 px with footers flush at 25 px |
+| 390 × 1701 | header 185 px with 3×2 nav grid, hero stacked, cards stacked to one column, `h1` 24 px, badge visible, no horizontal overflow |
+
+Screenshots: `reports/figures/phase01_dashboard_desktop_1440.png`,
+`reports/figures/phase01_dashboard_mobile_390.png`,
+`reports/figures/phase01_sentiment_result_1440.png` (a real backend prediction, `5 / 5 stars`,
+bars 0.2 / 0.4 / 3.2 / 41.7 / 54.5 %).
+
+All six routes were re-rendered after the change: correct `h1`, correct specimen index, correct
+active nav state, badge present, **zero console errors**, no horizontal overflow. Keyboarding the
+first three stops produced a `:focus-visible` outline of `solid 2px rgb(95, 211, 224)` with a 2 px
+offset at every stop.
+
+### Re-run results
+
+`npm run verify` from `frontend/`: `next lint` clean · `tsc --noEmit` exit 0 · motion, entry and
+design-system suites pass · `next build` 8 routes, **92.4 kB** shared JS (91.0 kB after step 1;
+the growth is the primitive layer and the per-route title map).
+
+### Status changes in the tracker
+
+| ID | Was | Now | Reason |
+|---|---|---|---|
+| N-03 | FAIL | **PASS** | all six animation packages declared and lock-synced; root manifest deleted |
+| N-05 | FAIL | **PASS** | per-route titles set once in `_app`; verified on all six routes |
+| N-14 | WARN | **PASS** | `eslint.config.mts` and the root Node manifest removed |
+| N-15 | FAIL | **PASS** | caption moved to its own grid row; paper bottom 781 vs caption top 793 |
+| N-16 | WARN | **PASS** | badge visible at 390 px and 976 px; hiding it now fails a test |
+| N-04 | FAIL | WARN | frontend `.env.example` added; the Dockerfile is still absent and unverifiable |
+| N-18 | — | **PASS** | card footers align: flex column, `margin-top: auto`, three cards at 267 px |
+| N-19 | — | **PASS** | mobile nav is a 3-column grid (2 below 30 rem) instead of a hidden-scrollbar strip |
+| N-20 | — | **PASS** | `typecheck`, `test` and `verify` scripts added; three contract suites |
+
+Tracker totals: **15 PASS / 18 FAIL / 6 WARN / 1 BLOCKED** of 40 rows.
+
+### Corrections and limits
+
+- The audit's N-03 wording implied the animation packages were installed but undeclared *and*
+  meaningful. They were installed, locked and imported by no module; they are now declared, and
+  phase 04 is the first task that should import them. A dependency no module imports is not
+  evidence that a feature works.
+- Reduced motion could not be emulated in this runtime. The `prefers-reduced-motion` block is
+  asserted by test and read by source only — it is **not** visually confirmed.
+- The dashboard ink hero still prints `4 / 5`, `admiration`, `82 %` and `68 %`. They are now
+  labelled `Example trace`, marked `role="img"` with an accessible name, and no longer presented
+  as live output, but they are still invented values. F-13 stays open for phase 04.
+- Skills invoked this phase: `hallmark` was loaded and its Floor constraints (no eyebrow
+  micro-caps, no middle-dot meta strings, no arrows glued to links, weights at most 600, no
+  card-in-card, instant focus) were applied; its page-build pipeline was deliberately not run
+  because its own scope rule excludes an existing system. `unslop` was loaded and applied as a
+  light polish pass against the audit findings. No other skill was invoked, and none is claimed.

@@ -3,12 +3,20 @@ import { useRouter } from "next/router";
 import { Activity, BookOpen, Database, FlaskConical, Gauge, HeartPulse } from "lucide-react";
 import type { ReactNode } from "react";
 import { useReadiness, type ReadinessPhase } from "./ReadinessProvider";
+import { Badge, type BadgeTone } from "./ui/Badge";
 
 const STATUS_LABEL: Record<ReadinessPhase, string> = {
   loading: "Checking API",
   ready: "API connected",
   degraded: "API degraded",
   offline: "API unreachable",
+};
+
+const PHASE_TONE: Record<ReadinessPhase, BadgeTone> = {
+  loading: "neutral",
+  ready: "success",
+  degraded: "warning",
+  offline: "danger",
 };
 
 const links = [
@@ -34,8 +42,11 @@ export function Layout({ children }: { children: ReactNode }) {
     <div className="app-shell">
       <aside className="sidebar">
         <Link className="brand" href="/">
-          <span className="brand-mark">N</span>
-          <span>NLP Lab<small>Language intelligence</small></span>
+          <span className="brand-mark" aria-hidden="true">N</span>
+          <span>
+            NLP Lab
+            <small>Language intelligence</small>
+          </span>
         </Link>
         <nav aria-label="Primary navigation">
           {links.map(({ href, label, icon: Icon }) => (
@@ -45,20 +56,21 @@ export function Layout({ children }: { children: ReactNode }) {
               href={href}
               key={href}
             >
-              <Icon size={17} aria-hidden="true" />
+              <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
               {label}
             </Link>
           ))}
         </nav>
         <div className="sidebar-note">
-          <span
-            className="status-badge"
+          <Badge
             data-phase={phase}
+            dot
             role="status"
             title={error ?? "Readiness reported by the FastAPI service"}
+            tone={PHASE_TONE[phase]}
           >
             {badgeLabel}
-          </span>
+          </Badge>
         </div>
       </aside>
       <main className="main-content">{children}</main>

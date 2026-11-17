@@ -34,6 +34,15 @@ ENV/
 .env
 .env.local
 *.env
+!.env.example
+!*/.env.example
+
+# Logs and caches
+*.log
+logs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Large datasets & raw data (Strictly avoid committing raw data)
 data/raw/
@@ -66,6 +75,8 @@ yarn-error.log*
 .next/
 out/
 .cache/
+coverage/
+.vercel/
 *.tsbuildinfo
 
 # IDE / OS

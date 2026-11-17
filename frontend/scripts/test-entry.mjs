@@ -16,7 +16,7 @@ assert.match(preloader, /durationMs=\{2600\}/);
 assert.match(preloader, /Skip/);
 assert.match(page, /href="\/analyze\/sentiment"/);
 assert.match(page, /href="\/analyze\/emotions"/);
-assert.match(page, /Inference trace/);
+assert.match(page, /Example trace/);
 assert.match(page, /Amazon rating/);
 assert.match(page, /GoEmotions/);
 

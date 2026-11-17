@@ -7,8 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:motion && npm run test:entry && npm run test:design",
     "test:motion": "node scripts/test-motion.mjs",
-    "test:entry": "node scripts/test-entry.mjs"
+    "test:entry": "node scripts/test-entry.mjs",
+    "test:design": "node scripts/test-design-system.mjs",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
