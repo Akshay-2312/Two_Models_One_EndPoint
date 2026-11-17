@@ -32,13 +32,19 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# The Next.js client is served from :3000. :5173 stays in the list for the
+# legacy Vite preview so older local setups keep working.
+DEFAULT_CORS_ORIGINS = (
+    "http://localhost:3000,http://127.0.0.1:3000,"
+    "http://localhost:5173,http://127.0.0.1:5173"
+)
+
 configured_origins = [
     origin.strip()
-    for origin in os.environ.get(
-        "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
-    ).split(",")
+    for origin in os.environ.get("CORS_ORIGINS", DEFAULT_CORS_ORIGINS).split(",")
     if origin.strip()
 ]
+logger.info("CORS allowlist: %s", ", ".join(configured_origins))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=configured_origins,

@@ -1,14 +1,27 @@
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { EntryPreloader } from "../components/EntryPreloader";
 import { InkHero } from "../components/InkHero";
-import { getReadiness, ReadinessResponse } from "../lib/api";
+import { useReadiness } from "../components/ReadinessProvider";
+
+const MODEL_LABELS: Record<string, string> = {
+  amazon_rating: "Amazon ratings",
+  go_emotions: "GoEmotions",
+};
+
+const STATUS_HEADLINE = {
+  loading: "Checking models",
+  ready: "Both models ready",
+  degraded: "Partly ready",
+  offline: "API unreachable",
+} as const;
 
 export default function Dashboard() {
-  const [readiness, setReadiness] = useState<ReadinessResponse | null>(null);
   const [preloaderVisible, setPreloaderVisible] = useState(true);
-  useEffect(() => { getReadiness().then(setReadiness).catch(() => setReadiness(null)); }, []);
+  const { phase, response, error, checkedAt, refresh } = useReadiness();
   const completePreloader = useCallback(() => setPreloaderVisible(false), []);
+  const models = response ? Object.entries(response.models) : [];
+
   return (
     <>
       {preloaderVisible && <EntryPreloader onComplete={completePreloader} />}
@@ -51,7 +64,34 @@ export default function Dashboard() {
         <div className="card-grid" data-gap="models">
           <article className="info-card"><span className="card-kicker">Model A</span><h2>Amazon ratings</h2><p>Word2Vec-initialized BiLSTM predicting five rating classes.</p><Link href="/analyze/sentiment">Open analyzer →</Link></article>
           <article className="info-card"><span className="card-kicker">Model B</span><h2>GoEmotions</h2><p>Fine-tuned DistilBERT for 28-label multi-label emotion output.</p><Link href="/analyze/emotions">Open analyzer →</Link></article>
-          <article className="info-card"><span className="card-kicker">System status</span><h2>{readiness?.status ?? "Checking..."}</h2><p>Availability is read from the FastAPI readiness endpoint.</p></article>
+          <article className="info-card">
+            <span className="card-kicker">System status</span>
+            <h2>{STATUS_HEADLINE[phase]}</h2>
+            {models.length > 0 && (
+              <ul className="status-list">
+                {models.map(([id, model]) => (
+                  <li data-ready={model.ready} key={id}>
+                    <span className="status-list__name">{MODEL_LABELS[id] ?? id}</span>
+                    <span className="status-list__state">{model.ready ? "ready" : model.error ?? "not ready"}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {phase === "loading" && <p>Requesting readiness from the FastAPI service. A cold start loads both models, so the first check can take several seconds.</p>}
+            {phase === "degraded" && <p>{error ?? "At least one model reported that it is not ready. Check the backend log for the load error."}</p>}
+            {phase === "offline" && <p className="status-error">{error}</p>}
+            {phase !== "loading" && checkedAt !== null && (
+              <p className="muted status-checked">Checked {new Date(checkedAt).toLocaleTimeString()}</p>
+            )}
+            <button
+              className="button secondary status-retry"
+              disabled={phase === "loading"}
+              onClick={refresh}
+              type="button"
+            >
+              {phase === "loading" ? "Checking…" : "Check again"}
+            </button>
+          </article>
         </div>
       </section>
     </>

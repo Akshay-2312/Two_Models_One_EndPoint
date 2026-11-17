@@ -3,7 +3,7 @@
 **Basis:** live repository at `C:\Users\aksha\projects\NLP\nlp-lab` (frontend + backend + ml + artifacts + data + reports), inspected directly, with commands executed and a real browser session.
 **Supersedes:** the archive-only audit supplied in `NLP_Lab_Frontend_Repair_Prompt_Pack.zip`.
 **Date:** 17 November 2026
-**Status:** Audit complete. Build, lint, typecheck, backend tests, live API, and browser entry cases verified. Responsive-viewport and reduced-motion reproduction **BLOCKED** (tooling). No source file was modified.
+**Status:** Audit complete. Build, lint, typecheck, backend tests, live API, and browser entry cases verified. Responsive-viewport and reduced-motion reproduction **BLOCKED** (tooling). No source file was modified during the audit itself. Plan steps 0–1 were applied afterwards and are recorded in §14.
 
 ---
 
@@ -261,6 +261,8 @@ Not invoked, and not claimed: `sota-app-builder`, `unslop`, `hallmark`, `playwri
 | 10 | QA: install Playwright, viewport matrix, reduced-motion emulation, keyboard, stress data | F-19, F-20 |
 | 11 | Final release gate | — |
 
+Steps 0 and 1 are now complete; see §14 for the evidence and the status changes.
+
 Acceptance for phase 0/1 should be a browser capture showing: readiness badge reflecting `ready` from the live API, one successful sentiment prediction, and one successful emotion prediction — with the console clean.
 
 ---
@@ -295,3 +297,65 @@ Acceptance for phase 0/1 should be a browser capture showing: readiness badge re
 No source file, configuration file, or asset was modified in this phase. Three background processes were started only for verification (Next dev on `:3000`, Uvicorn on `:8000`, and a temporary Uvicorn on `:8001` with a corrected CORS allowlist) and were stopped afterwards. The only files written are this report and `reports/ISSUE_TRACKER.csv`.
 
 The next phase can identify itself from the plan above; it must not begin until item 0 and item 1 are accepted, because every later acceptance test depends on a browser that can reach the API.
+
+---
+
+## 14. Post-audit remediation — steps 0 and 1 (applied and verified)
+
+Applied after the audit. §1–§13 above are left as the record of what was found.
+
+### Step 0 — version control
+
+- `git init -b main` in `nlp-lab`, then a baseline commit `aaf6cab` before any edit: **82 files, 1.4 MB tracked**.
+- The existing `.gitignore` already excluded `artifacts/models/`, `node_modules/`, `.next/`, `.venv/` and model binaries, so no weights were committed.
+- Correction to the ignore file: `*.csv` was silently excluding `reports/ISSUE_TRACKER.csv`; a `!reports/*.csv` exception now keeps report deliverables tracked.
+- **N-10 → PASS.**
+
+### Step 1 — integration and truthful status
+
+| Change | Where | Evidence |
+|---|---|---|
+| Default allowlist includes the Next.js dev origins (`:3000`) while staying overridable | `backend/app/main.py:37-47` | preflight from `http://localhost:3000` → **200** (audit measured **400**); startup logs the resolved allowlist |
+| Compose supplies `CORS_ORIGINS` with a working default | `docker-compose.yml:12` | `${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}` |
+| JSON `Content-Type` only when a body exists | `frontend/lib/api.ts:29-40` | Uvicorn log: `GET /readiness 200` with **no** preceding `OPTIONS` |
+| Shared readiness state machine — `loading`, `ready`, `degraded`, `offline`, error text, 60 s timeout, focus/online recovery | `frontend/components/ReadinessProvider.tsx:37-129` | provider drives both surfaces below |
+| Sidebar badge bound to that state (`API connected · n/n`) | `frontend/components/Layout.tsx:25-31,53-61` | live text changed with backend state |
+| Dashboard status card: per-model rows, failure reason, last-checked time, retry | `frontend/pages/index.tsx:66-96` | screenshot `reports/figures/phase01_readiness_state.png` |
+| Phase colours and status-list styling | `frontend/styles/globals.css:140-143,170-180` | visual |
+| Contract assertions for the new wiring | `frontend/scripts/test-entry.mjs:23-34` | `npm run test:entry` passes |
+
+Evidence, with **no** `CORS_ORIGINS` set in the environment:
+
+1. `OPTIONS /readiness` from `http://localhost:3000` → 200, `access-control-allow-origin: http://localhost:3000`.
+2. Fresh tab: badge `API connected · 2/2`; card `Both models ready`; both rows `ready`; **zero console errors**.
+3. Sentiment analyzer submitted through the real UI → `1 / 5 stars`, bars 56.7 / 34.6 / 8.0 / 0.5 / 0.3 %, no console errors. The POST still sends `Content-Type` (preflight 200, `POST /predict/amazon 200` in the log), so the header change did not weaken writes.
+4. Backend killed, `Check again` → `API unreachable`, detail `Cannot reach the API at http://127.0.0.1:8000. Start the backend, then retry.`
+5. Backend restarted, `Check again` → observed sequence `offline → Checking API → API connected · 2/2` in 6.3 s.
+
+Re-run after the change: `tsc --noEmit` exit 0 · `next lint` clean · `next build` 8 routes, 91.0 kB shared JS (was 88.9) · `test:motion` and `test:entry` pass · `pytest` 5 passed.
+
+### Status changes in the tracker
+
+| ID | Was | Now | Reason |
+|---|---|---|---|
+| F-11 | FAIL | **PASS** | badge reads shared readiness, no hard-coded claim |
+| F-12 | FAIL | **PASS** | explicit four-phase machine replaces the stuck `Checking...` fallback |
+| N-01 | FAIL | **PASS** | default config now allows the app origin; preflight 200 |
+| N-02 | FAIL | **PASS** | GET no longer preflighted |
+| N-10 | FAIL | **PASS** | git baseline established |
+
+Unchanged by design: F-16 (abort/timeout/retry on the analyzer requests) is still open for step 5; the readiness fetch has a timeout, the prediction requests do not.
+
+### Correction to the baseline (found while committing step 1)
+
+`.gitignore`'s Python block contained an unanchored `lib/`, which also matched `frontend/lib/`. The baseline commit therefore omitted `frontend/lib/api.ts` and `frontend/lib/motion.ts`, so a clean clone could not build. The Python packaging paths are now root-anchored, `*.tsbuildinfo` is ignored, and `frontend/tsconfig.tsbuildinfo` is no longer tracked. **N-17 → PASS**, found and fixed before any deployment claim.
+
+### New observations during verification
+
+- **N-15** — at a 580 px viewport the Ink Hero caption (`Signal / 01 · Scroll to develop`) overlaps the inference preview card's content. Phase 04.
+- **N-16** — `.sidebar-note` is `display: none` below 48 rem, so the badge is invisible on mobile; there the dashboard card is the only status surface. Responsive pass.
+- F-13 remains open: the preview card's `4 / 5`, `admiration`, `82 %`, `68 %` are still hard-coded and still read as live output.
+
+### Skills made available
+
+Found in `~/.copilot/skills` and copied into `~/.agents/skills` (the registered source): `gsap-core`, `gsap-react`, `gsap-scrolltrigger`, `gsap-timeline`, `gsap-plugins`, `gsap-utils`, `gsap-performance`, `gsap-frameworks`, `modern-web-design`, `motion-framer`. They are now advertised to the agent. None has been invoked yet — phase 04 is the first task that needs them. `impeccable`, `typescript-setup` and `typescript-update` do not exist in either collection and must not be cited as if they do.

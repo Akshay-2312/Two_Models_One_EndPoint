@@ -2,6 +2,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Activity, BookOpen, Database, FlaskConical, Gauge, HeartPulse } from "lucide-react";
 import type { ReactNode } from "react";
+import { useReadiness, type ReadinessPhase } from "./ReadinessProvider";
+
+const STATUS_LABEL: Record<ReadinessPhase, string> = {
+  loading: "Checking API",
+  ready: "API connected",
+  degraded: "API degraded",
+  offline: "API unreachable",
+};
 
 const links = [
   { href: "/", label: "Dashboard", icon: Gauge },
@@ -14,6 +22,13 @@ const links = [
 
 export function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const { phase, response, error } = useReadiness();
+  const models = response ? Object.values(response.models) : [];
+  const readyCount = models.filter((model) => model.ready).length;
+  const badgeLabel =
+    phase === "ready" && models.length > 0
+      ? `${STATUS_LABEL.ready} · ${readyCount}/${models.length}`
+      : STATUS_LABEL[phase];
 
   return (
     <div className="app-shell">
@@ -36,7 +51,14 @@ export function Layout({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <div className="sidebar-note">
-          <span className="status-badge">API-connected workspace</span>
+          <span
+            className="status-badge"
+            data-phase={phase}
+            role="status"
+            title={error ?? "Readiness reported by the FastAPI service"}
+          >
+            {badgeLabel}
+          </span>
         </div>
       </aside>
       <main className="main-content">{children}</main>
