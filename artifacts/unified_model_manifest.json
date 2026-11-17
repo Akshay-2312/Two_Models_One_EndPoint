@@ -1,0 +1,18 @@
+{
+  "project": "Dual-Architecture NLP Classification Platform",
+  "models": {
+    "amazon_rating_bilstm": {
+      "architecture": "Word2Vec Skip-gram + Bidirectional LSTM",
+      "checkpoint_path": "/content/drive/MyDrive/NLP_Lab/checkpoints/word2vec_bilstm/w2v_bilstm_best.pt",
+      "sha256": "c6a6773f7e453f29bdec6ffeeddb82f687999e85347b96e2e9cf4aca0a7c4210",
+      "classes": 5
+    },
+    "goemotions_distilbert": {
+      "architecture": "DistilBERT for Sequence Classification (Multi-Label)",
+      "checkpoint_path": "/content/drive/MyDrive/NLP_Lab/checkpoints/distilbert_goemotions/model.safetensors",
+      "sha256": "ae0a3058b444e0380aeba5043c568af46d2c9544f289aa56eaff13f3901e72f5",
+      "classes": 28,
+      "optimal_threshold": 0.30000000000000004
+    }
+  }
+}

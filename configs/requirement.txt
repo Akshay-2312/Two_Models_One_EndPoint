@@ -1,0 +1,27 @@
+# Core API/runtime
+fastapi>=0.110,<1
+uvicorn[standard]>=0.28,<1
+pydantic>=2.6,<3
+python-dotenv>=1,<2
+httpx>=0.27,<1
+
+# Testing
+pytest>=8,<9
+
+# PyTorch model inference and evaluation utilities
+torch>=2.2,<3
+numpy>=1.26,<3
+scikit-learn>=1.4,<2
+
+# Amazon Word2Vec inference
+gensim>=4.3,<5
+
+# GoEmotions DistilBERT inference
+transformers>=4.38,<6
+safetensors>=0.4,<1
+tokenizers>=0.15,<1
+
+# ONNX export and CPU parity runtime
+onnx>=1.16,<2
+onnxruntime>=1.18,<2
+onnxscript>=0.2,<1

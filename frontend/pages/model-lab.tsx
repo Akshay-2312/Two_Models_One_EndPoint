@@ -1,0 +1,3 @@
+export default function ModelLab() {
+  return <section className="page-section"><div className="eyebrow">Research</div><h1>Model Lab</h1><p className="lede">Two independent model tracks, trained and served with explicit artifacts.</p><div className="card-grid"><article className="info-card"><h2>Word2Vec + BiLSTM</h2><p>200-dimensional embeddings feed a two-layer bidirectional LSTM with five output classes.</p></article><article className="info-card"><h2>DistilBERT</h2><p>Fine-tuned sequence classification with sigmoid probabilities across 28 GoEmotions labels.</p></article></div></section>;
+}
