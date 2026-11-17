@@ -86,6 +86,9 @@ npm run build       # next build
 npm run verify      # all four, in order
 ```
 
+`next build` and `next dev` share `.next/`. Stop the dev server before running `verify` or
+`build`, otherwise the running dev server starts failing to resolve its own chunks.
+
 Backend, from the repository root:
 
 ```bash

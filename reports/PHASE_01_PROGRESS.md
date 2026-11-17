@@ -126,6 +126,12 @@ Downgraded: `N-04` FAIL → WARN (env example added, Dockerfile still absent).
   restyled.
 - **Real Drive folder IDs remain hard-coded** in `sync_drive.py` and
   `gemini_notebook_context.md`. Out of phase-01 scope; flagged, not silently edited.
+- **Do not run `next build` against a running `next dev`.** Both write `.next/`. During this phase
+  `npm run verify` (which builds) ran while the dev server was live; the dev server subsequently
+  logged `Cannot find module './309.js'` and served `500` for `/`. Deleting `.next` and starting
+  dev again served all six routes at 200 with zero console errors, so this is a Next.js
+  shared-output collision, not a defect in the app. Every screenshot and measurement above was
+  taken before the build ran. Stop dev before building, or build in a clean directory.
 
 ## 6. Next phase
 
