@@ -86,3 +86,200 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Local test outputs
+*.json
+
+
+# ============================================================
+# NLP Lab — root .gitignore
+# Keep source code, notebooks, documentation, manifests,
+# evaluation metrics, curated dataset metadata and useful reports.
+# Exclude secrets, local environments, build output, logs,
+# caches, raw/processed data and large trained model binaries.
+# ============================================================
+
+# ---------- Secrets and environment files ----------
+.env
+.env.*
+!.env.example
+!.env.*.example
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+
+# Private keys, certificates and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jks
+*.keystore
+id_rsa
+id_ed25519
+credentials.json
+service-account*.json
+secrets/
+.secret/
+
+# ---------- Operating system / editor ----------
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.example.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------- Node.js / Next.js frontend ----------
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+out/
+dist/
+build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Keep package-lock.json, pnpm-lock.yaml and yarn.lock tracked.
+
+# ---------- Python / FastAPI / ML ----------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+*.egg-info/
+.eggs/
+wheels/
+share/python-wheels/
+sync_drive.py
+
+# Jupyter transient files (keep the actual notebooks)
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# ---------- Logs and temporary runtime files ----------
+*.log
+logs/
+**/logs/
+tmp/
+temp/
+*.tmp
+*.temp
+*.pid
+*.seed
+
+# ---------- Large model binaries and training checkpoints ----------
+# Store these in Hugging Face Hub, Git LFS, or external artifact storage.
+# Keep JSON configs, manifests, thresholds and evaluation metrics tracked.
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.onnx.data
+*.npy
+*.npz
+*.model
+*.model.wv.vectors.npy
+*.model.syn1neg.npy
+*.bin
+
+# ---------- Dataset exports / processed data ----------
+# Keep the small, curated JSON schema, quality and summary files.
+*.parquet
+*.arrow
+*.feather
+*.csv
+*.tsv
+
+# If you later add small, intentional CSV fixtures for tests,
+# force-add them with: git add -f path/to/fixture.csv
+
+# ---------- Project-specific generated / local files ----------
+# Generated build and runtime output
+artifacts/cache/
+artifacts/tmp/
+artifacts/logs/
+data/raw/
+data/cache/
+data/tmp/
+reports/directory.md
+reports/PHASE_01_PROGRESS.md
+reports/PHASE_02_PROGRESS.md
+reports/progress.md
+reports/progressFT.md
+reports/SOURCE_CODE_REDTEAM_AUDIT.md
+
+# Colab / Drive sync credentials or local sync state
+.sync/
+.sync-state*
+sync_drive.local.*
+.sync_drive_state*
+
+# Browser / Playwright generated output
+playwright-report/
+test-results/
+blob-report/
+**/playwright-report/
+**/test-results/
+
+# ---------- Docker / deployment local state ----------
+# Do not ignore Dockerfiles, Compose files, Caddyfile or deployment docs.
+docker-data/
+docker-volumes/
+**/docker-volumes/
+
+# ---------- Explicitly retain important project assets ----------
+# These negations document intended tracked files. They are not strictly
+# necessary unless a broader ignore rule is added in the future.
+!README.md
+!**/README.md
+!*.ipynb
+!**/*.ipynb
+!*.json
+!**/*.json
+!*.md
+!**/*.md
+!*.yml
+!**/*.yml
+!*.yaml
+!**/*.yaml
+!*.tsx
+!**/*.tsx
+!*.ts
+!**/*.ts
+!*.py
+!**/*.py
+!*.css
+!**/*.css
+!*.svg
+!**/*.svg
+
