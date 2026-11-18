@@ -1,0 +1,153 @@
+<svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">NLP Lab 4-Layer Serving and Contract Resilience</title>
+  <desc id="d">Four defense layers across backend and frontend: Layer 1 Schema Guard enforces TextRequest extra forbid and 1 to 10,000 characters with HTTP 422; Layer 2 Lazy Bundle Loader isolates per-model readiness and reports partial or degraded states; Layer 3 Governance and Audit locks GET /datasets/{id}/samples while exposing statistics, model lab, and technology manifests; Layer 4 UI State Machine manages checking, online, degraded, offline, and unknown states in Next.js ReadinessProvider.</desc>
+  <style>
+    :root{
+      --bg:#f3f1e9;--surface:#faf9f4;--ink:#20211c;--body:#20211c;--muted:#626459;
+      --border:rgba(32,33,28,0.22);--grid:rgba(32,33,28,0.06);
+      --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+      --cyan:#0e7c8c;--violet:#5d4fd6;
+      --ok:#3c735b;--ok-bg:#e4ece3;--warn:#8a591c;--err:#ae4340;--info:#526b80;
+      --surface-subtle:#eae8df
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#11120f;--surface:#191a16;--ink:#f2f0e8;--body:#f2f0e8;--muted:#a5a69b;
+        --border:rgba(242,240,232,0.22);--grid:rgba(242,240,232,0.05);
+        --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+        --cyan:#5fd3e0;--violet:#a394f8;
+        --ok:#9ecbbb;--ok-bg:#1c3028;--warn:#e5c28c;--err:#edaaa1;--info:#a6bfd0;
+        --surface-subtle:#22231d
+      }
+    }
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,"SFMono-Regular","Cascadia Mono","IBM Plex Mono",Consolas,"Liberation Mono",monospace}
+    .bg{fill:var(--bg)}
+    .surface{fill:var(--surface);stroke:var(--border)}
+    .inset{fill:var(--surface-subtle)}
+    .rule{stroke:var(--border)}
+    .grid{stroke:var(--grid)}
+    .kicker{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:1.8px}
+    .sub{fill:var(--ink);font-size:23px;font-weight:700;letter-spacing:-0.3px}
+    .h3{fill:var(--ink);font-size:17px;font-weight:700}
+    .desc{fill:var(--muted);font-size:13px}
+    .code{fill:var(--body);font-size:11px;font-weight:500}
+    .foot{fill:var(--muted);font-size:11.5px}
+    .accent-soft{fill:var(--accent-soft)}
+    .stroke-accent{stroke:var(--accent)}
+  </style>
+  <defs>
+    <pattern id="rl-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" class="grid" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="440"/>
+  <rect x="0" y="0" width="1200" height="440" fill="url(#rl-grid)"/>
+
+  <!-- Header -->
+  <text x="44" y="52" class="sans kicker">SERVING &amp; CONTRACT RESILIENCE</text>
+  <line x1="296" y1="47.5" x2="1156" y2="47.5" class="rule" stroke-width="1"/>
+  <text x="44" y="92" class="sans sub">
+    Four defense layers keep <tspan fill="var(--cyan)">PyTorch inference</tspan> isolated, governed, and <tspan fill="var(--accent)">contract-verified</tspan>.
+  </text>
+
+  <!-- Connector Arrows between cards -->
+  <g fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.65">
+    <path d="M 308,250 L 322,250 M 317,245 L 322,250 L 317,255"/>
+    <path d="M 592,250 L 606,250 M 601,245 L 606,250 L 601,255"/>
+    <path d="M 876,250 L 890,250 M 885,245 L 890,250 L 885,255"/>
+  </g>
+
+  <!-- Layer 1: Schema Guard -->
+  <g>
+    <rect x="44" y="124" width="260" height="252" rx="12" class="surface" stroke-width="1"/>
+    <rect x="44" y="124" width="260" height="252" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0.85">
+      <animate attributeName="opacity" values="0.85;0;0;0;0.85" keyTimes="0;0.24;0.5;0.75;1" dur="10s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="44" y="142" width="4" height="216" rx="2" fill="var(--accent)"/>
+    <text x="64" y="154" class="sans kicker" style="font-size:11px;fill:var(--warn)">LAYER 01</text>
+    <g transform="translate(262,139)" stroke="var(--warn)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 10,1.5 L 18,4.5 L 18,10 C 18,15 14.8,18.2 10,20 C 5.2,18.2 2,15 2,10 L 2,4.5 Z"/>
+      <path d="M 7,10 L 9.2,12.2 L 13.5,7.8"/>
+    </g>
+    <text x="64" y="184" class="sans h3">Schema Guard</text>
+    <text x="64" y="208" class="sans desc">Strict Pydantic boundary</text>
+    <text x="64" y="226" class="sans desc">before tensor tokenization.</text>
+    <rect x="64" y="244" width="222" height="86" rx="8" class="inset"/>
+    <text x="76" y="266" class="mono code">TextRequest (extra="forbid")</text>
+    <text x="76" y="290" class="mono code">min_length=1 · max=10,000</text>
+    <text x="76" y="314" class="mono code" style="fill:var(--warn)">rejects unknown JSON keys</text>
+    <text x="64" y="356" class="mono" style="font-size:11.5px;font-weight:700;fill:var(--warn)">→ HTTP 422 on invalid payload</text>
+  </g>
+
+  <!-- Layer 2: Lazy Bundle Loader -->
+  <g>
+    <rect x="328" y="124" width="260" height="252" rx="12" class="surface" stroke-width="1"/>
+    <rect x="328" y="124" width="260" height="252" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0">
+      <animate attributeName="opacity" values="0;0.85;0;0;0" keyTimes="0;0.25;0.49;0.75;1" dur="10s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="328" y="142" width="4" height="216" rx="2" fill="var(--cyan)"/>
+    <text x="348" y="154" class="sans kicker" style="font-size:11px;fill:var(--cyan)">LAYER 02</text>
+    <g transform="translate(546,139)" stroke="var(--cyan)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="10,2 18,6.5 10,11 2,6.5"/>
+      <polyline points="2,10.5 10,15 18,10.5"/>
+      <polyline points="2,14.5 10,19 18,14.5"/>
+    </g>
+    <text x="348" y="184" class="sans h3">Lazy Bundle Loader</text>
+    <text x="348" y="208" class="sans desc">Per-model readiness isolation</text>
+    <text x="348" y="226" class="sans desc">with honest partial status.</text>
+    <rect x="348" y="244" width="222" height="86" rx="8" class="inset"/>
+    <text x="358" y="266" class="mono code" style="font-size:10px">GET /readiness → ready|not_ready</text>
+    <text x="358" y="290" class="mono code">amazon: {ready, error}</text>
+    <text x="358" y="314" class="mono code">goemotions: {ready, error}</text>
+    <text x="348" y="356" class="mono" style="font-size:11.5px;font-weight:700;fill:var(--err)">→ /predict/* 503 if missing</text>
+  </g>
+
+  <!-- Layer 3: Governance & Audit -->
+  <g>
+    <rect x="612" y="124" width="260" height="252" rx="12" class="surface" stroke-width="1"/>
+    <rect x="612" y="124" width="260" height="252" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.85;0;0" keyTimes="0;0.49;0.55;0.74;1" dur="10s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="612" y="142" width="4" height="216" rx="2" fill="var(--violet)"/>
+    <text x="632" y="154" class="sans kicker" style="font-size:11px;fill:var(--violet)">LAYER 03</text>
+    <g transform="translate(830,139)" stroke="var(--violet)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="9" width="12" height="9" rx="2"/>
+      <path d="M 6.5,9 L 6.5,6 A 3.5,3.5 0 0 1 13.5,6 L 13.5,9"/>
+    </g>
+    <text x="632" y="184" class="sans h3">Governance &amp; Audit</text>
+    <text x="632" y="208" class="sans desc">Read-only manifests &amp; metrics</text>
+    <text x="632" y="226" class="sans desc">while raw samples stay locked.</text>
+    <rect x="632" y="244" width="222" height="86" rx="8" class="inset"/>
+    <text x="644" y="266" class="mono code">GET /datasets/{id}/samples</text>
+    <text x="644" y="290" class="mono code">GET /statistics · /models/lab</text>
+    <text x="644" y="314" class="mono code">GET /technology (sanitized)</text>
+    <text x="632" y="356" class="mono" style="font-size:11.5px;font-weight:700;fill:var(--ok)">→ approved: false, items: []</text>
+  </g>
+
+  <!-- Layer 4: UI State Machine -->
+  <g>
+    <rect x="896" y="124" width="260" height="252" rx="12" class="surface" stroke-width="1"/>
+    <rect x="896" y="124" width="260" height="252" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0.85;0" keyTimes="0;0.74;0.75;0.98;1" dur="10s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="896" y="142" width="4" height="216" rx="2" fill="var(--ok)"/>
+    <text x="916" y="154" class="sans kicker" style="font-size:11px;fill:var(--ok)">LAYER 04</text>
+    <g transform="translate(1114,139)" stroke="var(--ok)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2,11 6,11 8.5,4 12,17 14.5,11 18,11"/>
+    </g>
+    <text x="916" y="184" class="sans h3">UI State Machine</text>
+    <text x="916" y="208" class="sans desc">Next.js ReadinessProvider</text>
+    <text x="916" y="226" class="sans desc">adapts UX to live API health.</text>
+    <rect x="916" y="244" width="222" height="86" rx="8" class="inset"/>
+    <text x="928" y="266" class="mono code">checking · online · degraded</text>
+    <text x="928" y="290" class="mono code">offline · unknown</text>
+    <text x="928" y="314" class="mono code" style="fill:var(--ok)">per-track action gating</text>
+    <text x="916" y="356" class="mono" style="font-size:11.5px;font-weight:700;fill:var(--ok)">→ Honest live status pill</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="44" y="414" class="mono foot">Request → Schema Guard → Lazy PyTorch Bundle → Governance Audit → ReadinessProvider</text>
+  <text x="1156" y="414" text-anchor="end" class="sans kicker" style="font-size:11px">NLP LAB · FAIL-CLOSED DESIGN</text>
+</svg>

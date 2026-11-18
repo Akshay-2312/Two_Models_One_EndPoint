@@ -1,0 +1,153 @@
+<svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">NLP Lab 3-Step Request and Readiness Flow: Probe /readiness, Predict /predict/amazon, and Predict /predict/go-emotions with real 200 ready or not_ready and 503 model_not_ready HTTP contracts.</title>
+  <desc id="d">Three horizontal step cards showing the live inference workflow: step 1 probes /readiness returning HTTP 200 with status ready when PyTorch bundles are loaded or not_ready when weights are absent; step 2 invokes POST /predict/amazon; step 3 invokes POST /predict/go-emotions, returning HTTP 503 model_not_ready when weights are absent with zero fake fallback output.</desc>
+  <style>
+    :root {
+      --bg: #f3f1e9;
+      --surface: #faf9f4;
+      --surface-subtle: #eae8df;
+      --ink: #20211c;
+      --body: #20211c;
+      --muted: #626459;
+      --border: rgba(32, 33, 28, 0.22);
+      --grid: rgba(32, 33, 28, 0.06);
+      --accent: #e5ac82;
+      --accent-soft: rgba(229, 172, 130, 0.18);
+      --ok: #3c735b;
+      --ok-bg: #e4ece3;
+      --err: #ae4340;
+      --err-bg: #f5e2dc;
+      --track-a: #0e7c8a;
+      --track-a-bg: #e1f4f6;
+      --track-b: #5a48b8;
+      --track-b-bg: #ebe8fc;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #11120f;
+        --surface: #191a16;
+        --surface-subtle: #22231d;
+        --ink: #f2f0e8;
+        --body: #f2f0e8;
+        --muted: #a5a69b;
+        --border: rgba(242, 240, 232, 0.22);
+        --grid: rgba(242, 240, 232, 0.05);
+        --accent: #e5ac82;
+        --accent-soft: rgba(229, 172, 130, 0.18);
+        --ok: #9ecbbb;
+        --ok-bg: #1c3028;
+        --err: #edaaa1;
+        --err-bg: #382421;
+        --track-a: #5fd3e0;
+        --track-a-bg: #152a2e;
+        --track-b: #a394f8;
+        --track-b-bg: #221f38;
+      }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, "Helvetica Neue", Arial, sans-serif; }
+    .mono { font-family: ui-monospace, "SFMono-Regular", "IBM Plex Mono", Consolas, "Liberation Mono", monospace; }
+    .bg { fill: var(--bg); }
+    .surface { fill: var(--surface); stroke: var(--border); }
+    .surface-subtle { fill: var(--surface-subtle); }
+    .rule { stroke: var(--border); }
+    .grid { stroke: var(--grid); }
+    .accent-soft { fill: var(--accent-soft); }
+    .stroke-accent { stroke: var(--accent); }
+    .kicker { fill: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; }
+    .sub { fill: var(--body); font-size: 18px; font-weight: 400; }
+    .h3 { fill: var(--ink); font-size: 15.5px; font-weight: 700; }
+    .cell { fill: var(--muted); font-size: 12px; font-weight: 500; }
+    .ok { fill: var(--ok); }
+    .ok-bg { fill: var(--ok-bg); }
+    .err { fill: var(--err); }
+    .err-bg { fill: var(--err-bg); }
+    .bar-a { fill: var(--track-a); }
+    .a-bg { fill: var(--track-a-bg); }
+    .bar-b { fill: var(--track-b); }
+    .b-bg { fill: var(--track-b-bg); }
+    .arrow { stroke: var(--muted); }
+    .arrow-head { fill: var(--muted); }
+    .foot { fill: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; }
+  </style>
+  <defs>
+    <pattern id="wzcGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" class="grid" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="300"/>
+  <rect x="0" y="0" width="1200" height="300" fill="url(#wzcGrid)"/>
+
+  <!-- Header -->
+  <text x="40" y="42" class="kicker">REQUEST &amp; READINESS FLOW</text>
+  <line x1="256" y1="37" x2="1160" y2="37" class="rule" stroke-width="1"/>
+  <text x="40" y="74" class="sub">
+    Honest HTTP contracts — <tspan class="ok" font-weight="600">/readiness 200 (ready | not_ready)</tspan>, <tspan class="err" font-weight="600">/predict/* 503</tspan> when weights are absent.
+  </text>
+
+  <!-- Step 1: Probe /readiness -->
+  <g>
+    <rect x="40" y="96" width="344" height="148" rx="12" class="surface" stroke-width="1"/>
+    <rect x="40" y="96" width="344" height="148" rx="12" class="accent-soft stroke-accent" stroke-width="2" opacity="0">
+      <animate attributeName="opacity" values="0;0.9;0;0" keyTimes="0;0.1;0.24;1" dur="9s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="40" y="112" width="4" height="116" rx="2" class="ok"/>
+    <circle cx="66" cy="126" r="4" class="ok">
+      <animate attributeName="opacity" values="1;0.35;1" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="78" y="131" class="h3">1. Probe /readiness</text>
+    <text x="64" y="154" class="mono cell">GET /readiness</text>
+
+    <rect x="64" y="168" width="296" height="26" rx="6" class="ok-bg"/>
+    <text x="76" y="185" class="mono ok" font-size="11.5" font-weight="600">200 ready · both bundles loaded</text>
+
+    <rect x="64" y="202" width="296" height="26" rx="6" class="err-bg"/>
+    <text x="76" y="219" class="mono err" font-size="11.5" font-weight="600">200 not_ready · weights absent</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="392" y1="170" x2="416" y2="170" class="arrow" stroke-width="2"/>
+  <polygon points="414,164 424,170 414,176" class="arrow-head"/>
+
+  <!-- Step 2: Predict /predict/amazon -->
+  <g>
+    <rect x="428" y="96" width="344" height="148" rx="12" class="surface" stroke-width="1"/>
+    <rect x="428" y="96" width="344" height="148" rx="12" class="accent-soft stroke-accent" stroke-width="2" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.9;0;0" keyTimes="0;0.33;0.43;0.57;1" dur="9s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="428" y="112" width="4" height="116" rx="2" class="bar-a"/>
+    <text x="452" y="131" class="h3">2. Predict /predict/amazon</text>
+    <text x="452" y="154" class="mono cell">POST /predict/amazon (TextRequest)</text>
+
+    <rect x="452" y="168" width="296" height="26" rx="6" class="a-bg"/>
+    <text x="464" y="185" class="mono bar-a" font-size="11.5" font-weight="600">200 { rating: 1..5, probabilities[5] }</text>
+
+    <rect x="452" y="202" width="296" height="26" rx="6" class="surface-subtle"/>
+    <text x="464" y="219" class="mono cell" font-size="11.5">422 schema · 503 if weights absent</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="780" y1="170" x2="804" y2="170" class="arrow" stroke-width="2"/>
+  <polygon points="802,164 812,170 802,176" class="arrow-head"/>
+
+  <!-- Step 3: Predict /predict/go-emotions -->
+  <g>
+    <rect x="816" y="96" width="344" height="148" rx="12" class="surface" stroke-width="1"/>
+    <rect x="816" y="96" width="344" height="148" rx="12" class="accent-soft stroke-accent" stroke-width="2" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.9;0;0" keyTimes="0;0.66;0.76;0.9;1" dur="9s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="816" y="112" width="4" height="116" rx="2" class="bar-b"/>
+    <text x="840" y="131" class="h3">3. Predict /predict/go-emotions</text>
+    <text x="840" y="154" class="mono cell">POST /predict/go-emotions (TextRequest)</text>
+
+    <rect x="840" y="168" width="296" height="26" rx="6" class="b-bg"/>
+    <text x="852" y="185" class="mono bar-b" font-size="11.5" font-weight="600">200 { emotions[], probs{}, τ: 0.30 }</text>
+
+    <rect x="840" y="202" width="296" height="26" rx="6" class="surface-subtle"/>
+    <text x="852" y="219" class="mono cell" font-size="11.5">422 schema · 503 if weights absent</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="40" y="276" class="foot">ZERO SYNTHETIC FALLBACK · NO FAKE PREDICTIONS WHEN PYTORCH ARTIFACT BUNDLES ARE MISSING</text>
+  <text x="1160" y="276" text-anchor="end" class="kicker">HTTP 200 / 422 / 503</text>
+</svg>

@@ -1,0 +1,173 @@
+<svg viewBox="0 0 1200 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">Model and Export Matrix: Random-Init BiLSTM Baseline, Word2Vec BiLSTM Track A, DistilBERT Track B, and ONNX Opset 17 Parity Export</title>
+  <desc id="d">Comparison matrix across four model artifacts: Random-Init BiLSTM Baseline (16.73M parameters, 0.5333 Macro-F1, 0.6299 MAE, 256 tokens, offline eval baseline), Word2Vec BiLSTM Track A (16.73M parameters, 0.5337 Macro-F1, 0.6225 MAE, 256 tokens, live FastAPI PyTorch serving), DistilBERT Track B (66.98M parameters, 0.4840 Macro-F1, 0.5917 Micro-F1, 128 WordPiece, live FastAPI PyTorch serving), and ONNX Opset 17 (parity verification only, tolerance &lt;= 1e-4, max errors 1.19e-7 and 3.34e-6 on CPUExecutionProvider, offline parity).</desc>
+  <style>
+    :root{
+      --bg:#f3f1e9;--surface:#faf9f4;--ink:#20211c;--body:#20211c;--muted:#626459;
+      --border:rgba(32,33,28,0.22);--grid:rgba(32,33,28,0.06);
+      --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+      --cyan:#0e7c8c;--cyan-soft:rgba(95,211,224,0.14);
+      --violet:#5d4fd6;--violet-soft:rgba(163,148,248,0.14);
+      --ok:#3c735b;--ok-bg:#e4ece3;--warn:#8a591c;--warn-bg:#f3e6cf;
+      --surface-subtle:#eae8df;--surface-muted:#e3e1d7
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#11120f;--surface:#191a16;--ink:#f2f0e8;--body:#f2f0e8;--muted:#a5a69b;
+        --border:rgba(242,240,232,0.22);--grid:rgba(242,240,232,0.05);
+        --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+        --cyan:#5fd3e0;--cyan-soft:rgba(95,211,224,0.13);
+        --violet:#a394f8;--violet-soft:rgba(163,148,248,0.13);
+        --ok:#9ecbbb;--ok-bg:#1c3028;--warn:#e5c28c;--warn-bg:#352c1c;
+        --surface-subtle:#22231d;--surface-muted:#292a23
+      }
+    }
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,"SFMono-Regular","Cascadia Mono","IBM Plex Mono",Consolas,"Liberation Mono",monospace}
+    .bg{fill:var(--bg)}
+    .surface{fill:var(--surface);stroke:var(--border)}
+    .surface-subtle{fill:var(--surface-subtle)}
+    .surface-muted{fill:var(--surface-muted)}
+    .rule{stroke:var(--border)}
+    .grid{stroke:var(--grid)}
+    .ok-bg{fill:var(--ok-bg)}
+    .warn-bg{fill:var(--warn-bg)}
+    .stroke-ok{stroke:var(--ok)}
+    .stroke-warn{stroke:var(--warn)}
+    .kicker{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:1.8px}
+    .sub{fill:var(--ink);font-size:23px;font-weight:700;letter-spacing:-0.3px}
+    .col-head{fill:var(--ink);font-size:15px;font-weight:700}
+    .col-sub{fill:var(--muted);font-size:11.5px;font-weight:600}
+    .row-lbl{fill:var(--body);font-size:13.5px;font-weight:600}
+    .cell-hi{fill:var(--ink);font-size:13.5px;font-weight:700}
+    .cell-lo{fill:var(--muted);font-size:13px;font-weight:500}
+    .foot{fill:var(--muted);font-size:11.5px}
+  </style>
+  <defs>
+    <pattern id="cmp-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" class="grid" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="660"/>
+  <rect x="0" y="0" width="1200" height="660" fill="url(#cmp-grid)"/>
+
+  <!-- Header -->
+  <text x="44" y="52" class="sans kicker">MODEL &amp; EXPORT MATRIX</text>
+  <line x1="234" y1="47.5" x2="1156" y2="47.5" class="rule" stroke-width="1"/>
+  <text x="44" y="92" class="sans sub">
+    Two specialized <tspan fill="var(--cyan)">PyTorch</tspan> models serve live; <tspan fill="var(--accent)">ONNX Opset 17</tspan> verifies numerical parity offline.
+  </text>
+
+  <!-- Outer Table Surface -->
+  <rect x="36" y="122" width="1128" height="476" rx="12" class="surface" stroke-width="1"/>
+
+  <!-- Zebra Rows (rows 2, 4, 6) -->
+  <rect x="44" y="240" width="1112" height="54" rx="6" class="surface-subtle"/>
+  <rect x="44" y="348" width="1112" height="54" rx="6" class="surface-subtle"/>
+  <rect x="44" y="456" width="1112" height="54" rx="6" class="surface-subtle"/>
+
+  <!-- Highlighted Columns: Word2Vec BiLSTM (Track A) & DistilBERT (Track B) -->
+  <rect x="502" y="122" width="204" height="476" rx="12" fill="var(--cyan-soft)" stroke="var(--cyan)" stroke-width="1.5"/>
+  <rect x="722" y="122" width="204" height="476" rx="12" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="1.5"/>
+
+  <!-- Column Headers -->
+  <text x="56" y="156" class="sans kicker" style="font-size:11px">CAPABILITY / METRIC</text>
+
+  <text x="392" y="149" text-anchor="middle" class="sans col-head" style="fill:var(--muted)">Random-Init BiLSTM</text>
+  <text x="392" y="168" text-anchor="middle" class="sans col-sub">Baseline (5-Class)</text>
+
+  <circle cx="536" cy="144" r="4" fill="var(--cyan)">
+    <animate attributeName="opacity" values="1;0.35;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <text x="610" y="149" text-anchor="middle" class="sans col-head">Word2Vec BiLSTM</text>
+  <text x="604" y="168" text-anchor="middle" class="sans col-sub" style="fill:var(--cyan)">Track A · Live FastAPI</text>
+
+  <circle cx="774" cy="144" r="4" fill="var(--violet)">
+    <animate attributeName="opacity" values="1;0.35;1" dur="3s" begin="0.8s" repeatCount="indefinite"/>
+  </circle>
+  <text x="828" y="149" text-anchor="middle" class="sans col-head">DistilBERT</text>
+  <text x="824" y="168" text-anchor="middle" class="sans col-sub" style="fill:var(--violet)">Track B · Live FastAPI</text>
+
+  <text x="1044" y="149" text-anchor="middle" class="sans col-head" style="fill:var(--muted)">ONNX Opset 17</text>
+  <text x="1044" y="168" text-anchor="middle" class="sans col-sub">Parity Export</text>
+
+  <line x1="44" y1="182" x2="1156" y2="182" class="rule" stroke-width="1"/>
+
+  <!-- Row 1: Task / Labels (y=186..240, baseline y=218) -->
+  <text x="56" y="218" class="sans row-lbl">Task / Labels</text>
+  <text x="392" y="218" text-anchor="middle" class="sans cell-lo">1–5★ Ordinal (5)</text>
+  <text x="604" y="218" text-anchor="middle" class="sans cell-hi">1–5★ Ordinal (5)</text>
+  <text x="824" y="218" text-anchor="middle" class="sans cell-hi">GoEmotions (28)</text>
+  <text x="1044" y="218" text-anchor="middle" class="sans cell-lo">Parity Check (5 &amp; 28)</text>
+
+  <!-- Row 2: Parameters (y=240..294, baseline y=272) -->
+  <text x="56" y="272" class="sans row-lbl">Parameters</text>
+  <text x="392" y="272" text-anchor="middle" class="mono cell-lo">16.73M</text>
+  <text x="604" y="272" text-anchor="middle" class="mono cell-hi">16.73M</text>
+  <text x="824" y="272" text-anchor="middle" class="mono cell-hi">66.98M</text>
+  <text x="1044" y="272" text-anchor="middle" class="sans cell-lo">Parity Only</text>
+
+  <!-- Row 3: Test Macro-F1 (y=294..348, baseline y=326) -->
+  <text x="56" y="326" class="sans row-lbl">Test Macro-F1</text>
+  <text x="392" y="326" text-anchor="middle" class="mono cell-lo">0.5333</text>
+  <text x="604" y="326" text-anchor="middle" class="mono cell-hi" style="fill:var(--ok)">0.5337</text>
+  <text x="824" y="326" text-anchor="middle" class="mono cell-hi" style="fill:var(--ok)">0.4840</text>
+  <text x="1044" y="326" text-anchor="middle" class="mono cell-lo">&lt;=1e-4 tol</text>
+
+  <!-- Row 4: Secondary Metric (y=348..402, baseline y=380) -->
+  <text x="56" y="380" class="sans row-lbl">Secondary Metric</text>
+  <text x="392" y="380" text-anchor="middle" class="mono cell-lo">0.6299 MAE</text>
+  <text x="604" y="380" text-anchor="middle" class="mono cell-hi">0.6225 MAE</text>
+  <text x="824" y="380" text-anchor="middle" class="mono cell-hi">0.5917 Micro-F1</text>
+  <text x="1044" y="380" text-anchor="middle" class="mono cell-lo">1.19e-7 &amp; 3.34e-6</text>
+
+  <!-- Row 5: Sequence Window (y=402..456, baseline y=434) -->
+  <text x="56" y="434" class="sans row-lbl">Sequence Window</text>
+  <text x="392" y="434" text-anchor="middle" class="mono cell-lo">256 tokens</text>
+  <text x="604" y="434" text-anchor="middle" class="mono cell-hi">256 tokens</text>
+  <text x="824" y="434" text-anchor="middle" class="mono cell-hi">128 WordPiece</text>
+  <text x="1044" y="434" text-anchor="middle" class="mono cell-lo">CPUExecutionProvider</text>
+
+  <!-- Row 6: Live Serving (y=456..510, baseline y=488) -->
+  <text x="56" y="488" class="sans row-lbl">Live Serving</text>
+  <text x="392" y="488" text-anchor="middle" class="sans cell-lo">Baseline</text>
+  <text x="604" y="488" text-anchor="middle" class="sans cell-hi">FastAPI PyTorch</text>
+  <text x="824" y="488" text-anchor="middle" class="sans cell-hi">FastAPI PyTorch</text>
+  <text x="1044" y="488" text-anchor="middle" class="sans cell-lo">Offline Parity</text>
+
+  <!-- Row 7: Production Route Status Badges (y=510..576, center y=542) -->
+  <text x="56" y="547" class="sans row-lbl">Production Endpoint</text>
+
+  <!-- Col 1: Cross badge (Baseline not served live) -->
+  <g transform="translate(392,542)">
+    <circle r="11" class="surface-muted"/>
+    <path d="M -3.8 -3.8 L 3.8 3.8 M 3.8 -3.8 L -3.8 3.8" stroke="var(--muted)" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- Col 2: Check badge (POST /predict/amazon) -->
+  <g transform="translate(604,542)">
+    <circle r="11" class="ok-bg"/>
+    <path d="M -5 0.3 L -1.6 3.7 L 5.4 -4" class="stroke-ok" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- Col 3: Check badge (POST /predict/go-emotions) -->
+  <g transform="translate(824,542)">
+    <circle r="11" class="ok-bg"/>
+    <path d="M -5 0.3 L -1.6 3.7 L 5.4 -4" class="stroke-ok" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- Col 4: Mid badge (Offline parity export only) -->
+  <g transform="translate(1044,542)">
+    <circle r="11" class="warn-bg"/>
+    <path d="M -4.6 0 L 4.6 0" class="stroke-warn" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Footer Legend -->
+  <g transform="translate(48,628)">
+    <circle r="5" fill="var(--ok)" cx="0" cy="-4"/>
+    <text x="12" y="0" class="sans foot">live route</text>
+    <circle r="5" fill="var(--warn)" cx="90" cy="-4"/>
+    <text x="102" y="0" class="sans foot">parity export only</text>
+    <circle r="5" fill="var(--muted)" cx="222" cy="-4"/>
+    <text x="234" y="0" class="sans foot">offline baseline · GoEmotions evaluated at τ = 0.30</text>
+  </g>
+  <text x="1156" y="628" text-anchor="end" class="sans kicker" style="font-size:10.5px">VERIFIED FROM REPORTS/METRICS &amp; ONNX MANIFEST</text>
+</svg>

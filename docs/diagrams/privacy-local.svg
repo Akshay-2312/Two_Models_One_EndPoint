@@ -1,0 +1,108 @@
+<svg viewBox="0 0 1200 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">Local-First Privacy, Air-Gapped CI, and Governance</title>
+  <desc id="d">Three local-first pillars of NLP Lab: 100% Local PyTorch Inference with no external LLM API keys or telemetry; Air-Gapped Smoke and Contract Tests where Playwright smoke passes without trained model binaries; Strict Sanitization and Governance blocking raw dataset rows while .gitignore keeps heavy model weights out of git.</desc>
+  <style>
+    :root{
+      --bg:#f3f1e9;--surface:#faf9f4;--ink:#20211c;--body:#20211c;--muted:#626459;
+      --border:rgba(32,33,28,0.22);--grid:rgba(32,33,28,0.06);
+      --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+      --cyan:#0e7c8c;--violet:#5d4fd6;--ok:#3c735b
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#11120f;--surface:#191a16;--ink:#f2f0e8;--body:#f2f0e8;--muted:#a5a69b;
+        --border:rgba(242,240,232,0.22);--grid:rgba(242,240,232,0.05);
+        --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+        --cyan:#5fd3e0;--violet:#a394f8;--ok:#9ecbbb
+      }
+    }
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,"SFMono-Regular","Cascadia Mono","IBM Plex Mono",Consolas,"Liberation Mono",monospace}
+    .bg{fill:var(--bg)}
+    .surface{fill:var(--surface);stroke:var(--border)}
+    .rule{stroke:var(--border)}
+    .grid{stroke:var(--grid)}
+    .kicker{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:1.8px}
+    .sub{fill:var(--ink);font-size:23px;font-weight:700;letter-spacing:-0.3px}
+    .h3{fill:var(--ink);font-size:16.5px;font-weight:700}
+    .body{fill:var(--muted);font-size:13.5px}
+    .badge{font-size:11.5px;font-weight:600}
+    .foot{fill:var(--muted);font-size:11.5px}
+    .accent-soft{fill:var(--accent-soft)}
+    .stroke-accent{stroke:var(--accent)}
+  </style>
+  <defs>
+    <pattern id="pl-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" class="grid" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="360"/>
+  <rect x="0" y="0" width="1200" height="360" fill="url(#pl-grid)"/>
+
+  <!-- Header -->
+  <text x="44" y="52" class="sans kicker">LOCAL-FIRST &amp; PRIVACY</text>
+  <line x1="226" y1="47.5" x2="1156" y2="47.5" class="rule" stroke-width="1"/>
+  <text x="44" y="92" class="sans sub">
+    Self-hosted runtime with <tspan fill="var(--ok)">zero external APIs</tspan>, <tspan fill="var(--cyan)">air-gapped CI</tspan>, and <tspan fill="var(--accent)">governed data</tspan>.
+  </text>
+
+  <!-- Card 1: 100% Local PyTorch Inference -->
+  <g>
+    <rect x="44" y="124" width="356" height="178" rx="12" class="surface" stroke-width="1"/>
+    <rect x="44" y="124" width="356" height="178" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0.85">
+      <animate attributeName="opacity" values="0.85;0;0;0.85" keyTimes="0;0.33;0.66;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="44" y="140" width="4" height="146" rx="2" fill="var(--ok)"/>
+    <g transform="translate(68,144)" stroke="var(--ok)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 11,1.5 L 19.5,5 L 19.5,11 C 19.5,16.5 16,19.8 11,21.5 C 6,19.8 2.5,16.5 2.5,11 L 2.5,5 Z"/>
+      <path d="M 7,11 L 10,14 L 15.4,8.2"/>
+    </g>
+    <text x="102" y="161" class="sans h3">100% Local PyTorch Inference</text>
+    <text x="68" y="196" class="sans body">Weights load directly on CPU or GPU from</text>
+    <text x="68" y="218" class="sans body">artifacts/models/ — zero external LLM API</text>
+    <text x="68" y="240" class="sans body">keys, cloud proxies, or outbound telemetry.</text>
+    <text x="68" y="280" class="mono badge" style="fill:var(--ok)">POST /predict/* · self-contained runtime</text>
+  </g>
+
+  <!-- Card 2: Air-Gapped Smoke & Contract Tests -->
+  <g>
+    <rect x="422" y="124" width="356" height="178" rx="12" class="surface" stroke-width="1"/>
+    <rect x="422" y="124" width="356" height="178" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0">
+      <animate attributeName="opacity" values="0;0.85;0;0" keyTimes="0;0.34;0.66;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="422" y="140" width="4" height="146" rx="2" fill="var(--cyan)"/>
+    <g transform="translate(446,144)" stroke="var(--cyan)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="18" height="16" rx="3"/>
+      <polyline points="6.5,8.5 9.5,11.5 6.5,14.5"/>
+      <line x1="12" y1="14.5" x2="15.5" y2="14.5"/>
+    </g>
+    <text x="480" y="161" class="sans h3">Air-Gapped Smoke &amp; Contracts</text>
+    <text x="446" y="196" class="sans body">Playwright smoke and 10 frontend suites</text>
+    <text x="446" y="218" class="sans body">verify readiness fallback and all 7 routes</text>
+    <text x="446" y="240" class="sans body">cleanly without trained model binaries.</text>
+    <text x="446" y="280" class="mono badge" style="fill:var(--cyan)">ci-playwright-smoke.mjs · offline-safe</text>
+  </g>
+
+  <!-- Card 3: Strict Sanitization & Governance -->
+  <g>
+    <rect x="800" y="124" width="356" height="178" rx="12" class="surface" stroke-width="1"/>
+    <rect x="800" y="124" width="356" height="178" rx="12" class="accent-soft stroke-accent" stroke-width="1.8" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.85;0" keyTimes="0;0.66;0.7;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="800" y="140" width="4" height="146" rx="2" fill="var(--violet)"/>
+    <g transform="translate(824,144)" stroke="var(--violet)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="10" width="14" height="10" rx="2"/>
+      <path d="M 7,10 L 7,6.5 A 4,4 0 0 1 15,6.5 L 15,10"/>
+    </g>
+    <text x="858" y="161" class="sans h3">Strict Sanitization &amp; Governance</text>
+    <text x="824" y="196" class="sans body">Dataset row sampling stays locked while CI</text>
+    <text x="824" y="218" class="sans body">scrubs local paths and .gitignore excludes</text>
+    <text x="824" y="240" class="sans body">heavy weights and raw parquet files.</text>
+    <text x="824" y="280" class="mono badge" style="fill:var(--violet)">approved: false · *.pt / *.onnx ignored</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="44" y="336" class="mono foot">$ docker compose up --build  ·  no external API keys  ·  heavy binaries untracked in git</text>
+  <text x="1156" y="336" text-anchor="end" class="sans kicker" style="font-size:11px">MIT · SELF-HOSTED</text>
+</svg>

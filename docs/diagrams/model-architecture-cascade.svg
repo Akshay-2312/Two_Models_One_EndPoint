@@ -1,0 +1,174 @@
+<svg viewBox="0 0 1200 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">NLP Lab Dual-Track Architecture: FastAPI Gateway with Pydantic TextRequest routing to Track A (Word2Vec BiLSTM Amazon 5-star) and Track B (DistilBERT GoEmotions 28-label).</title>
+  <desc id="d">Architecture cascade showing the shared FastAPI and Pydantic TextRequest gateway feeding two lazy-loaded PyTorch inference tracks: Track A Word2Vec 200d Skip-gram and 2-layer BiLSTM (16,734,869 params, Macro-F1 0.5337, MAE 0.6225, ONNX parity 1.19e-07) and Track B DistilBERT 6L/12H/768d (66,975,004 params, tau=0.30 sigmoid, Macro-F1 0.4840, Micro-F1 0.5917, ONNX parity 3.34e-06).</desc>
+  <style>
+    :root {
+      --bg: #f3f1e9;
+      --surface: #faf9f4;
+      --surface-subtle: #eae8df;
+      --ink: #20211c;
+      --body: #20211c;
+      --muted: #626459;
+      --border: rgba(32, 33, 28, 0.22);
+      --grid: rgba(32, 33, 28, 0.06);
+      --accent: #e5ac82;
+      --accent-soft: rgba(229, 172, 130, 0.18);
+      --ok: #3c735b;
+      --ok-bg: #e4ece3;
+      --track-a: #0e7c8a;
+      --track-a-bg: #e1f4f6;
+      --track-b: #5a48b8;
+      --track-b-bg: #ebe8fc;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #11120f;
+        --surface: #191a16;
+        --surface-subtle: #22231d;
+        --ink: #f2f0e8;
+        --body: #f2f0e8;
+        --muted: #a5a69b;
+        --border: rgba(242, 240, 232, 0.22);
+        --grid: rgba(242, 240, 232, 0.05);
+        --accent: #e5ac82;
+        --accent-soft: rgba(229, 172, 130, 0.18);
+        --ok: #9ecbbb;
+        --ok-bg: #1c3028;
+        --track-a: #5fd3e0;
+        --track-a-bg: #152a2e;
+        --track-b: #a394f8;
+        --track-b-bg: #221f38;
+      }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, "Helvetica Neue", Arial, sans-serif; }
+    .mono { font-family: ui-monospace, "SFMono-Regular", "IBM Plex Mono", Consolas, "Liberation Mono", monospace; }
+    .bg { fill: var(--bg); }
+    .surface { fill: var(--surface); stroke: var(--border); }
+    .surface-subtle { fill: var(--surface-subtle); }
+    .rule { stroke: var(--border); }
+    .grid { stroke: var(--grid); }
+    .accent { fill: var(--accent); }
+    .kicker { fill: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; }
+    .sub { fill: var(--body); font-size: 21px; font-weight: 400; }
+    .h3 { fill: var(--ink); font-size: 16px; font-weight: 700; }
+    .stage-lbl { fill: var(--muted); font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; }
+    .stage-val { fill: var(--ink); font-size: 12.5px; font-weight: 500; }
+    .pill-a { fill: var(--track-a-bg); stroke: var(--track-a); }
+    .pill-b { fill: var(--track-b-bg); stroke: var(--track-b); }
+    .pill-ok { fill: var(--ok-bg); stroke: var(--ok); }
+    .txt-a { fill: var(--track-a); font-weight: 600; }
+    .txt-b { fill: var(--track-b); font-weight: 600; }
+    .txt-ok { fill: var(--ok); font-weight: 600; }
+    .bar-a { fill: var(--track-a); }
+    .bar-b { fill: var(--track-b); }
+    .stroke-a { stroke: var(--track-a); }
+    .stroke-b { stroke: var(--track-b); }
+    .foot { fill: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; }
+  </style>
+  <defs>
+    <pattern id="archGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" class="grid" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="540"/>
+  <rect x="0" y="0" width="1200" height="540" fill="url(#archGrid)"/>
+
+  <!-- Header -->
+  <text x="40" y="50" class="kicker">ARCHITECTURE &amp; INFERENCE PIPELINE</text>
+  <line x1="336" y1="45" x2="1160" y2="45" class="rule" stroke-width="1"/>
+  <text x="40" y="84" class="sub">
+    One FastAPI gateway, <tspan class="txt-a">two task-tuned PyTorch tracks</tspan> — lazy-loaded with zero synthetic fallback.
+  </text>
+
+  <!-- Top Gateway Layer -->
+  <rect x="40" y="106" width="1120" height="106" rx="12" class="surface" stroke-width="1"/>
+  <rect x="40" y="120" width="4" height="78" rx="2" class="accent"/>
+
+  <text x="66" y="136" class="h3">FastAPI Gateway + Pydantic TextRequest(extra="forbid", 1..10,000 chars)</text>
+  <rect x="748" y="118" width="392" height="26" rx="6" class="pill-ok" stroke-width="1"/>
+  <circle cx="764" cy="131" r="3.5" class="txt-ok">
+    <animate attributeName="opacity" values="1;0.35;1" dur="2.8s" repeatCount="indefinite"/>
+  </circle>
+  <text x="776" y="135" class="mono txt-ok" font-size="11.5">Lazy PyTorch Bundle Loader · GET /readiness</text>
+
+  <!-- Two Route Pills inside Gateway -->
+  <rect x="66" y="158" width="520" height="38" rx="7" class="pill-a" stroke-width="1"/>
+  <text x="82" y="182" class="mono txt-a" font-size="12.5">POST /predict/amazon</text>
+  <text x="570" y="182" text-anchor="end" class="mono stage-val" font-size="11.5">→ rating (1–5★) + probabilities[5]</text>
+
+  <rect x="614" y="158" width="526" height="38" rx="7" class="pill-b" stroke-width="1"/>
+  <text x="630" y="182" class="mono txt-b" font-size="12.5">POST /predict/go-emotions</text>
+  <text x="1124" y="182" text-anchor="end" class="mono stage-val" font-size="11.5">→ emotions[] + probabilities{} + τ=0.30</text>
+
+  <!-- Cascade Connectors -->
+  <line x1="312" y1="212" x2="312" y2="244" class="stroke-a" stroke-width="2"/>
+  <polygon points="306,238 318,238 312,246" class="bar-a"/>
+  <circle cx="312" cy="228" r="3.5" class="bar-a">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <line x1="888" y1="212" x2="888" y2="244" class="stroke-b" stroke-width="2"/>
+  <polygon points="882,238 894,238 888,246" class="bar-b"/>
+  <circle cx="888" cy="228" r="3.5" class="bar-b">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Track A Card: Amazon Review Rating -->
+  <g>
+    <rect x="40" y="248" width="544" height="238" rx="12" class="surface" stroke-width="1"/>
+    <rect x="40" y="264" width="4" height="206" rx="2" class="bar-a"/>
+
+    <text x="64" y="282" class="h3">Track A — Amazon Review Rating</text>
+    <rect x="412" y="264" width="152" height="24" rx="6" class="pill-a" stroke-width="1"/>
+    <text x="488" y="280" text-anchor="middle" class="mono txt-a" font-size="11">16,734,869 params</text>
+
+    <!-- Rows -->
+    <rect x="64" y="298" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="78" y="321" class="stage-lbl">DATA</text>
+    <text x="132" y="321" class="stage-val">Kaggle 3M / 650k → 450k / 50k / 50k split (seed 42)</text>
+
+    <rect x="64" y="344" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="78" y="367" class="stage-lbl">TOKEN</text>
+    <text x="132" y="367" class="stage-val mono" font-size="11.5">gensim.utils.simple_preprocess · 80,002 vocab</text>
+
+    <rect x="64" y="390" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="78" y="413" class="stage-lbl">MODEL</text>
+    <text x="132" y="413" class="stage-val">Word2Vec 200d Skip-gram → 2L BiLSTM 128h → Linear(256,5)</text>
+
+    <rect x="64" y="436" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="78" y="459" class="stage-lbl">EVAL</text>
+    <text x="132" y="459" class="stage-val mono" font-size="11.5">Macro-F1 0.5337 · MAE 0.6225 · ONNX opset 17: 1.19e-07</text>
+  </g>
+
+  <!-- Track B Card: GoEmotions 28-Label -->
+  <g>
+    <rect x="616" y="248" width="544" height="238" rx="12" class="surface" stroke-width="1"/>
+    <rect x="616" y="264" width="4" height="206" rx="2" class="bar-b"/>
+
+    <text x="640" y="282" class="h3">Track B — GoEmotions 28-Label</text>
+    <rect x="988" y="264" width="152" height="24" rx="6" class="pill-b" stroke-width="1"/>
+    <text x="1064" y="280" text-anchor="middle" class="mono txt-b" font-size="11">66,975,004 params</text>
+
+    <!-- Rows -->
+    <rect x="640" y="298" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="654" y="321" class="stage-lbl">DATA</text>
+    <text x="708" y="321" class="stage-val">HF simplified → 43,410 / 5,426 / 5,427 split (28 labels)</text>
+
+    <rect x="640" y="344" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="654" y="367" class="stage-lbl">TOKEN</text>
+    <text x="708" y="367" class="stage-val mono" font-size="11.5">WordPiece tokenizer · 30,522 vocab · max_len 128</text>
+
+    <rect x="640" y="390" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="654" y="413" class="stage-lbl">MODEL</text>
+    <text x="708" y="413" class="stage-val">distilbert-base-uncased (6L/12H/768d) → Linear(768,28)</text>
+
+    <rect x="640" y="436" width="500" height="38" rx="6" class="surface-subtle"/>
+    <text x="654" y="459" class="stage-lbl">EVAL</text>
+    <text x="708" y="459" class="stage-val mono" font-size="11.5">τ=0.30 sigmoid · Macro 0.4840 · Micro 0.5917 · ONNX 3.34e-06</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="40" y="518" class="foot">LIVE FASTAPI ROUTES SERVE PYTORCH DIRECTLY · ONNX RUNTIME USED FOR EXPORT &amp; PARITY VERIFICATION</text>
+  <text x="1160" y="518" text-anchor="end" class="foot">PARITY TOLERANCE ≤ 1e-4</text>
+</svg>

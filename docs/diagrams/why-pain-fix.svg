@@ -1,0 +1,135 @@
+<svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">Why NLP Lab — six common NLP demo pitfalls and how NLP Lab solves each</title>
+  <desc id="d">Split comparison ledger contrasting six common NLP demo shortcuts against NLP Lab production engineering: real 503 readiness probes instead of synthetic fallbacks, dedicated BiLSTM and DistilBERT tracks instead of one generic classifier, validation-tuned tau 0.30 threshold (+0.0429 val Macro-F1) instead of uncalibrated 0.50, CI-enforced OpenAPI and technology manifest checks, governance-guarded dataset samples endpoint (approved: false, items: []), and full unchanged probability distributions returned to the Next.js UI.</desc>
+  <style>
+    :root{
+      --bg:#f3f1e9;--surface:#faf9f4;--ink:#20211c;--body:#20211c;--muted:#626459;
+      --border:rgba(32,33,28,0.22);--grid:rgba(32,33,28,0.06);
+      --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+      --cyan:#0e7c8c;--violet:#5d4fd6;
+      --ok:#3c735b;--ok-bg:#e4ece3;--warn:#8a591c;--err:#ae4340;--err-bg:#f5e2dc
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#11120f;--surface:#191a16;--ink:#f2f0e8;--body:#f2f0e8;--muted:#a5a69b;
+        --border:rgba(242,240,232,0.22);--grid:rgba(242,240,232,0.05);
+        --accent:#e5ac82;--accent-soft:rgba(229,172,130,0.18);
+        --cyan:#5fd3e0;--violet:#a394f8;
+        --ok:#9ecbbb;--ok-bg:#1c3028;--warn:#e5c28c;--err:#edaaa1;--err-bg:#382421
+      }
+    }
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,"SFMono-Regular","Cascadia Mono","IBM Plex Mono",Consolas,"Liberation Mono",monospace}
+    .bg{fill:var(--bg)}
+    .surface{fill:var(--surface);stroke:var(--border)}
+    .rule{stroke:var(--border)}
+    .grid{stroke:var(--grid)}
+    .ok-bg{fill:var(--ok-bg)}
+    .stroke-ok{stroke:var(--ok)}
+    .stroke-err{stroke:var(--err)}
+    .kicker{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:1.8px}
+    .sub{fill:var(--ink);font-size:23px;font-weight:700;letter-spacing:-0.3px}
+    .pain{fill:var(--body);font-size:14.5px;font-weight:500}
+    .fix-lead{fill:var(--ok);font-size:14.5px;font-weight:700}
+    .fix-sub{fill:var(--muted);font-size:13px;font-weight:400}
+    .foot{fill:var(--muted);font-size:11.5px}
+  </style>
+  <defs>
+    <pattern id="wpf-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" class="grid" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="620"/>
+  <rect x="0" y="0" width="1200" height="620" fill="url(#wpf-grid)"/>
+
+  <!-- Header -->
+  <text x="44" y="54" class="sans kicker">WHY NLP LAB</text>
+  <line x1="154" y1="49.5" x2="1156" y2="49.5" class="rule" stroke-width="1"/>
+  <text x="44" y="96" class="sans sub">
+    Stop shipping <tspan fill="var(--err)">synthetic stubs</tspan>, <tspan fill="var(--warn)">uncalibrated thresholds</tspan>, and <tspan fill="var(--err)">stale contracts</tspan>.
+  </text>
+
+  <!-- Column Headers -->
+  <g transform="translate(48,137)" class="stroke-err" stroke-width="2.4" fill="none" stroke-linecap="round">
+    <line x1="0" y1="0" x2="11" y2="11"/>
+    <line x1="11" y1="0" x2="0" y2="11"/>
+  </g>
+  <text x="72" y="147" class="sans kicker" style="fill:var(--err)">COMMON NLP DEMO PITFALLS</text>
+
+  <g transform="translate(612,136)" class="stroke-ok" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 0,7 L 4.5,11.5 L 13,2"/>
+  </g>
+  <text x="638" y="147" class="sans kicker" style="fill:var(--ok)">HOW NLP LAB FIXES IT</text>
+
+  <line x1="44" y1="164" x2="1156" y2="164" class="rule" stroke-width="1"/>
+
+  <!-- Sweeping row highlight (visible at t=0 on row 1) -->
+  <rect x="44" y="172" width="1112" height="64" rx="6" class="ok-bg" opacity="0.65">
+    <animate attributeName="y" calcMode="discrete" values="172;236;300;364;428;492" keyTimes="0;0.166;0.333;0.5;0.666;0.833" dur="12s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.65;0.75;0.55;0.65" keyTimes="0;0.35;0.7;1" dur="2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Ledger Grid Lines -->
+  <g class="rule" stroke-width="1" stroke-opacity="0.5">
+    <line x1="44" y1="236" x2="1156" y2="236"/>
+    <line x1="44" y1="300" x2="1156" y2="300"/>
+    <line x1="44" y1="364" x2="1156" y2="364"/>
+    <line x1="44" y1="428" x2="1156" y2="428"/>
+    <line x1="44" y1="492" x2="1156" y2="492"/>
+    <line x1="44" y1="556" x2="1156" y2="556"/>
+    <line x1="592" y1="172" x2="592" y2="556"/>
+  </g>
+
+  <!-- Row Icons: Red X (left) & Green Check (right) -->
+  <g class="stroke-err" stroke-opacity="0.85" stroke-width="2" fill="none" stroke-linecap="round">
+    <g transform="translate(50,200)"><line x1="0" y1="0" x2="8" y2="8"/><line x1="8" y1="0" x2="0" y2="8"/></g>
+    <g transform="translate(50,264)"><line x1="0" y1="0" x2="8" y2="8"/><line x1="8" y1="0" x2="0" y2="8"/></g>
+    <g transform="translate(50,328)"><line x1="0" y1="0" x2="8" y2="8"/><line x1="8" y1="0" x2="0" y2="8"/></g>
+    <g transform="translate(50,392)"><line x1="0" y1="0" x2="8" y2="8"/><line x1="8" y1="0" x2="0" y2="8"/></g>
+    <g transform="translate(50,456)"><line x1="0" y1="0" x2="8" y2="8"/><line x1="8" y1="0" x2="0" y2="8"/></g>
+    <g transform="translate(50,520)"><line x1="0" y1="0" x2="8" y2="8"/><line x1="8" y1="0" x2="0" y2="8"/></g>
+  </g>
+  <g class="stroke-ok" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(612,199)"><path d="M 0,6 L 4,10 L 11.5,1.5"/></g>
+    <g transform="translate(612,263)"><path d="M 0,6 L 4,10 L 11.5,1.5"/></g>
+    <g transform="translate(612,327)"><path d="M 0,6 L 4,10 L 11.5,1.5"/></g>
+    <g transform="translate(612,391)"><path d="M 0,6 L 4,10 L 11.5,1.5"/></g>
+    <g transform="translate(612,455)"><path d="M 0,6 L 4,10 L 11.5,1.5"/></g>
+    <g transform="translate(612,519)"><path d="M 0,6 L 4,10 L 11.5,1.5"/></g>
+  </g>
+
+  <!-- Row 1 -->
+  <text x="72" y="209" class="sans pain">Synthetic fallback responses when weights are missing</text>
+  <text x="638" y="198" class="sans fix-lead">Real 503 + /readiness probe per model</text>
+  <text x="638" y="219" class="sans fix-sub">Per-model bundle isolation fails closed with honest 503 status</text>
+
+  <!-- Row 2 -->
+  <text x="72" y="273" class="sans pain">Single generic classifier forced onto different tasks</text>
+  <text x="638" y="262" class="sans fix-lead">Dedicated BiLSTM (1–5★) + DistilBERT (28-label)</text>
+  <text x="638" y="283" class="sans fix-sub">Word2Vec Skip-gram BiLSTM for ordinal stars; DistilBERT for GoEmotions</text>
+
+  <!-- Row 3 -->
+  <text x="72" y="337" class="sans pain">Uncalibrated 0.50 multi-label threshold hiding rare emotions</text>
+  <text x="638" y="326" class="sans fix-lead">Validation-tuned τ = 0.30 (+0.0429 val Macro-F1)</text>
+  <text x="638" y="347" class="sans fix-sub">Lifts GoEmotions validation Macro-F1 from 0.4531 to 0.4960</text>
+
+  <!-- Row 4 -->
+  <text x="72" y="401" class="sans pain">Stale OpenAPI docs &amp; hidden dependency drift</text>
+  <text x="638" y="390" class="sans fix-lead">CI-enforced OpenAPI &amp; tech manifest checks</text>
+  <text x="638" y="411" class="mono fix-sub" style="font-size:12px">export_openapi.py --check &amp; generate_technology_manifest.py --check</text>
+
+  <!-- Row 5 -->
+  <text x="72" y="465" class="sans pain">Raw dataset rows leaked via unguarded endpoints</text>
+  <text x="638" y="454" class="sans fix-lead">Governance-guarded /datasets/{id}/samples</text>
+  <text x="638" y="475" class="mono fix-sub">Returns approved: false, items: [] to block raw row exposure</text>
+
+  <!-- Row 6 -->
+  <text x="72" y="529" class="sans pain">Opaque model wrappers hiding prediction confidence</text>
+  <text x="638" y="518" class="sans fix-lead">Full unchanged probability distributions to UI</text>
+  <text x="638" y="539" class="sans fix-sub">All 5 star softmax &amp; 28 emotion sigmoid scores rendered transparently</text>
+
+  <!-- Footer -->
+  <text x="44" y="592" class="mono foot">Zero silent mocks · Two specialized PyTorch models · Contract-verified in CI</text>
+  <text x="1156" y="592" text-anchor="end" class="sans kicker" style="font-size:11px">NLP LAB · ARCHITECTURE LEDGER</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg viewBox="0 0 1200 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">NLP Lab Verification CLI Terminal</title>
+  <desc id="d">Dark terminal window running the four NLP Lab CI verification commands: pytest backend/tests -q, python scripts/export_openapi.py --check, python scripts/generate_technology_manifest.py --check, and cd frontend &amp;&amp; npm run verify, showing passing test suites and compiled routes with a scrolling command ticker below.</desc>
+  <style>
+    :root{
+      --bg:#f3f1e9;--border:rgba(32,33,28,0.22);
+      --accent:#e5ac82;--inverse-bg:#11120f;--inverse-text:#f2f0e8;
+      --inv-ok:#9ecbbb;--inv-warn:#e5c28c;--inv-err:#edaaa1;--inv-info:#a6bfd0;--inv-muted:#a5a69b
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#11120f;--border:rgba(242,240,232,0.22);
+        --accent:#e5ac82;--inverse-bg:#11120f;--inverse-text:#f2f0e8;
+        --inv-ok:#9ecbbb;--inv-warn:#e5c28c;--inv-err:#edaaa1;--inv-info:#a6bfd0;--inv-muted:#a5a69b
+      }
+    }
+    .mono{font-family:ui-monospace,"SFMono-Regular","Cascadia Mono","IBM Plex Mono",Consolas,"Liberation Mono",monospace}
+    .bg{fill:var(--bg)}
+    .inverse{fill:var(--inverse-bg)}
+    .rule{stroke:var(--border)}
+    .term-title{font-size:13.5px;font-weight:500;fill:var(--inv-muted)}
+    .term-cmd{font-size:17.5px;font-weight:500;fill:var(--inverse-text)}
+    .term-out{font-size:15.5px;font-weight:500;fill:var(--inv-muted)}
+    .term-tick{font-size:14px;font-weight:500;fill:var(--inv-muted)}
+  </style>
+  <defs>
+    <clipPath id="cli-ticker">
+      <rect x="14" y="302" width="1172" height="42"/>
+    </clipPath>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="350"/>
+  <rect x="0.5" y="0.5" width="1199" height="349" rx="12" class="inverse rule" stroke-width="1"/>
+
+  <!-- macOS 34px Titlebar -->
+  <g fill="var(--inverse-text)" opacity="0.06">
+    <rect x="0.5" y="0.5" width="1199" height="34" rx="12"/>
+    <rect x="0.5" y="22" width="1199" height="12.5"/>
+  </g>
+  <path d="M 0.5 34.5 L 1199.5 34.5" stroke="var(--inverse-text)" stroke-opacity="0.12" stroke-width="1"/>
+  <circle cx="24" cy="17" r="6" fill="var(--inv-err)"/>
+  <circle cx="46" cy="17" r="6" fill="var(--inv-warn)"/>
+  <circle cx="68" cy="17" r="6" fill="var(--inv-ok)"/>
+  <text x="600" y="22" text-anchor="middle" class="mono term-title">nlp-lab — backend, schema &amp; frontend verification</text>
+
+  <!-- Command 1 -->
+  <text x="34" y="68" class="mono term-cmd">
+    <tspan fill="var(--inv-ok)">$</tspan> pytest backend/tests -q
+  </text>
+  <text x="690" y="68" class="mono term-cmd" style="fill:var(--inv-ok)">✓ passed (11 routes · 422/503)</text>
+
+  <!-- Command 2 -->
+  <text x="34" y="100" class="mono term-cmd">
+    <tspan fill="var(--inv-ok)">$</tspan> python scripts/export_openapi.py --check
+  </text>
+  <text x="690" y="100" class="mono term-cmd" style="fill:var(--inv-ok)">✓ docs/openapi.json in sync</text>
+
+  <!-- Command 3 -->
+  <text x="34" y="132" class="mono term-cmd">
+    <tspan fill="var(--inv-ok)">$</tspan> python scripts/generate_technology_manifest.py --check
+  </text>
+  <text x="690" y="132" class="mono term-cmd" style="fill:var(--inv-ok)">✓ manifest sanitized &amp; valid</text>
+
+  <!-- Command 4 -->
+  <text x="34" y="164" class="mono term-cmd">
+    <tspan fill="var(--inv-ok)">$</tspan> cd frontend &amp;&amp; npm run verify
+  </text>
+  <text x="690" y="164" class="mono term-cmd" style="fill:var(--inv-ok)">✓ lint · tsc · 10 tests · build</text>
+
+  <!-- Sub-output lines -->
+  <text x="54" y="202" class="mono term-out">
+    <tspan fill="var(--inv-info)">├─ suites:</tspan> motion · storage · entry · design · api-states · analyzers · datasets · model-lab · docs · tech
+  </text>
+  <text x="54" y="230" class="mono term-out">
+    <tspan fill="var(--inv-info)">└─ routes:</tspan> / · /analyze/sentiment · /analyze/emotions · /model-lab · /datasets · /documentation · /technology
+  </text>
+
+  <!-- Final Prompt + Pulsing Cursor -->
+  <text x="34" y="274" class="mono term-cmd" style="fill:var(--inv-ok)">$</text>
+  <rect x="54" y="257" width="10" height="20" rx="1.5" fill="var(--accent)">
+    <animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.45;0.5;0.95;1" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+  <text x="74" y="274" class="mono term-out" style="fill:var(--inv-muted)" opacity="0.75">ready · ci-playwright-smoke.mjs available</text>
+
+  <!-- Bottom 46px Ticker Strip -->
+  <path d="M 0.5 300.5 L 1199.5 300.5" stroke="var(--inverse-text)" stroke-opacity="0.12" stroke-width="1"/>
+  <g clip-path="url(#cli-ticker)">
+    <g class="mono term-tick">
+      <animateTransform attributeName="transform" type="translate" from="0 0" to="-1480 0" dur="36s" repeatCount="indefinite"/>
+      <text x="24" y="330">
+        <tspan fill="var(--accent)">pytest backend/tests -q</tspan> · export_openapi.py --check · generate_technology_manifest.py --check · <tspan fill="var(--accent)">npm run verify</tspan> · ci-playwright-smoke.mjs · <tspan fill="var(--accent)">POST /predict/amazon</tspan> · POST /predict/go-emotions · GET /readiness · GET /models/lab ·
+      </text>
+      <text x="1504" y="330">
+        <tspan fill="var(--accent)">pytest backend/tests -q</tspan> · export_openapi.py --check · generate_technology_manifest.py --check · <tspan fill="var(--accent)">npm run verify</tspan> · ci-playwright-smoke.mjs · <tspan fill="var(--accent)">POST /predict/amazon</tspan> · POST /predict/go-emotions · GET /readiness · GET /models/lab ·
+      </text>
+    </g>
+  </g>
+</svg>
