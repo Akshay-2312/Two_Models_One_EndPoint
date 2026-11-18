@@ -1,0 +1,300 @@
+{
+  "provenance": "Repository audit artifacts (Notebooks 00-02, data/*.json)",
+  "last_audit_date": "2026-11-13",
+  "datasets": {
+    "amazon_reviews": {
+      "name": "Amazon Reviews for Sentiment Analysis",
+      "task": "Five-class review rating classification (1–5 stars)",
+      "label_semantics": "5 ordinal star-rating classes (1–5). Rating classification is not identical to objective emotional state; rating/text disagreement occurs.",
+      "source_url": "https://www.kaggle.com/datasets/yacharki/amazon-reviews-for-sentianalysis-finegrained-csv",
+      "mirror_url": "https://huggingface.co/datasets/yassiracharki/Amazon_Reviews_for_Sentiment_Analysis_fine_grained_5_classes",
+      "status": "audited",
+      "last_audit_date": "2026-11-13",
+      "splits": {
+        "train": 3000000,
+        "test": 650000,
+        "sampled_train": 450000,
+        "sampled_validation": 50000,
+        "sampled_test": 50000
+      },
+      "schema": {
+        "test.csv": {
+          "columns": [
+            "class_index",
+            "review_title",
+            "review_text"
+          ],
+          "dtypes": {
+            "class_index": "int64",
+            "review_title": "str",
+            "review_text": "str"
+          }
+        },
+        "train.csv": {
+          "columns": [
+            "class_index",
+            "review_title",
+            "review_text"
+          ],
+          "dtypes": {
+            "class_index": "int64",
+            "review_title": "str",
+            "review_text": "str"
+          }
+        }
+      },
+      "class_distribution": {
+        "train": {
+          "1": 600000,
+          "2": 600000,
+          "3": 600000,
+          "4": 600000,
+          "5": 600000
+        },
+        "test": {
+          "1": 130000,
+          "2": 130000,
+          "3": 130000,
+          "4": 130000,
+          "5": 130000
+        },
+        "sampled_train": {
+          "1": 90000,
+          "2": 90000,
+          "3": 90000,
+          "4": 90000,
+          "5": 90000
+        }
+      },
+      "missing_values": {
+        "recorded": true,
+        "train": {
+          "review_title_nulls": 188,
+          "review_text_nulls": 0,
+          "total_rows": 3000000
+        },
+        "test": {
+          "review_title_nulls": 26,
+          "review_text_nulls": 0,
+          "total_rows": 650000
+        },
+        "note": "188 null review_title rows in train (0.0063%) and 26 in test (0.0040%); 0 null review_text rows."
+      },
+      "text_length_stats": {
+        "recorded": true,
+        "unit": "words",
+        "scope": "Sampled train split filtered < 256 words (n = 450,000)",
+        "min": 3,
+        "p50": 74,
+        "mean": 82.07,
+        "std": 43.43,
+        "p75": 113,
+        "p90": 148,
+        "p95": 164,
+        "p99": 183,
+        "max": 242,
+        "max_sequence_cap": 256
+      },
+      "duplicates_audit": {
+        "recorded": false,
+        "duplicate_count": null,
+        "near_duplicate_count": null,
+        "missing_reason": "Duplicate and near-duplicate review counts were not persisted in committed repository audit artifacts.",
+        "note": "Duplicate and near-duplicate review counts were not persisted in committed repository audit artifacts."
+      },
+      "imbalance_summary": "Full corpus splits are class-balanced (600,000 per rating in train; 130,000 per rating in test). High row count and equal class balance still do not guarantee low label noise—rating/text disagreement exists.",
+      "quality_warnings": [
+        "188 null review_title rows in train (0.0063%) and 26 in test (0.0040%); 0 null review_text rows.",
+        "Model training and evaluation used a < 256-word filtered subset (450,000 sampled_train, 50,000 sampled_validation, 50,000 sampled_test) rather than all 3,000,000 training rows.",
+        "Exact and near-duplicate review counts were not persisted in committed repository audit artifacts.",
+        "Raw Kaggle Amazon review records are restricted from public redistribution under repository licensing and data-governance rules."
+      ],
+      "samples_policy": {
+        "approved": false,
+        "reason": "Raw Kaggle Amazon review records are excluded from public redistribution under repository licensing and data-governance rules."
+      }
+    },
+    "go_emotions": {
+      "name": "GoEmotions (Simplified)",
+      "task": "Multi-label emotion classification (27 emotions + neutral = 28 labels)",
+      "label_semantics": "28 independent binary/multi-label outputs (27 emotion categories plus neutral). Multiple labels can apply to one comment, and neutral is a distinct label rather than empty predictions.",
+      "source_url": "https://huggingface.co/datasets/google-research-datasets/go_emotions",
+      "paper_url": "https://aclanthology.org/2020.acl-main.372/",
+      "status": "audited",
+      "last_audit_date": "2026-11-13",
+      "splits": {
+        "train": 43410,
+        "validation": 5426,
+        "test": 5427
+      },
+      "schema": {
+        "splits": {
+          "train": 43410,
+          "validation": 5426,
+          "test": 5427
+        },
+        "features": {
+          "text": "Value('string')",
+          "labels": "List(ClassLabel(names=['admiration', 'amusement', 'anger', 'annoyance', 'approval', 'caring', 'confusion', 'curiosity', 'desire', 'disappointment', 'disapproval', 'disgust', 'embarrassment', 'excitement', 'fear', 'gratitude', 'grief', 'joy', 'love', 'nervousness', 'optimism', 'pride', 'realization', 'relief', 'remorse', 'sadness', 'surprise', 'neutral']))",
+          "id": "Value('string')"
+        }
+      },
+      "class_prevalence": {
+        "train": {
+          "neutral": 14219,
+          "admiration": 4130,
+          "approval": 2939,
+          "gratitude": 2662,
+          "annoyance": 2470,
+          "amusement": 2328,
+          "curiosity": 2191,
+          "love": 2086,
+          "disapproval": 2022,
+          "optimism": 1581,
+          "anger": 1567,
+          "joy": 1452,
+          "confusion": 1368,
+          "sadness": 1326,
+          "disappointment": 1269,
+          "realization": 1110,
+          "caring": 1087,
+          "surprise": 1060,
+          "excitement": 853,
+          "disgust": 793,
+          "desire": 641,
+          "fear": 596,
+          "remorse": 545,
+          "embarrassment": 303,
+          "nervousness": 164,
+          "relief": 153,
+          "pride": 111,
+          "grief": 77
+        },
+        "validation": {
+          "neutral": 1766,
+          "admiration": 488,
+          "approval": 397,
+          "gratitude": 358,
+          "amusement": 303,
+          "annoyance": 303,
+          "disapproval": 292,
+          "love": 252,
+          "curiosity": 248,
+          "optimism": 209,
+          "anger": 195,
+          "joy": 172,
+          "disappointment": 163,
+          "caring": 153,
+          "confusion": 152,
+          "sadness": 143,
+          "surprise": 129,
+          "realization": 127,
+          "disgust": 97,
+          "excitement": 96,
+          "fear": 90,
+          "desire": 77,
+          "remorse": 68,
+          "embarrassment": 35,
+          "nervousness": 21,
+          "relief": 18,
+          "pride": 15,
+          "grief": 13
+        },
+        "test": {
+          "neutral": 1787,
+          "admiration": 504,
+          "gratitude": 352,
+          "approval": 351,
+          "annoyance": 320,
+          "curiosity": 284,
+          "disapproval": 267,
+          "amusement": 264,
+          "love": 238,
+          "anger": 198,
+          "optimism": 186,
+          "joy": 161,
+          "sadness": 156,
+          "confusion": 153,
+          "disappointment": 151,
+          "realization": 145,
+          "surprise": 141,
+          "caring": 135,
+          "disgust": 123,
+          "excitement": 103,
+          "desire": 83,
+          "fear": 78,
+          "remorse": 56,
+          "embarrassment": 37,
+          "nervousness": 23,
+          "pride": 16,
+          "relief": 11,
+          "grief": 6
+        }
+      },
+      "labels_per_example": {
+        "train": {
+          "1": 36308,
+          "2": 6541,
+          "3": 532,
+          "4": 28,
+          "5": 1
+        },
+        "validation": {
+          "1": 4548,
+          "2": 809,
+          "3": 62,
+          "4": 7
+        },
+        "test": {
+          "1": 4590,
+          "2": 774,
+          "3": 61,
+          "4": 2
+        }
+      },
+      "missing_values": {
+        "recorded": false,
+        "null_count": null,
+        "empty_text_count": null,
+        "missing_reason": "Empty/null text rate was not separately exported into committed goemotions_data_quality.json.",
+        "note": "Empty/null text rate was not separately exported into committed goemotions_data_quality.json."
+      },
+      "text_length_stats": {
+        "recorded": true,
+        "unit": "DistilBERT subword tokens",
+        "scope": "Tokenized train split (distilbert-base-uncased)",
+        "mean": 19.17,
+        "p95": 34.0,
+        "p99": 38.0,
+        "max": 316,
+        "max_sequence_cap": 128,
+        "exceeding_max_length": 1
+      },
+      "duplicates_audit": {
+        "recorded": false,
+        "duplicate_count": null,
+        "near_duplicate_count": null,
+        "missing_reason": "Duplicate and near-duplicate comment counts were not persisted in committed repository audit artifacts.",
+        "note": "Duplicate and near-duplicate comment counts were not persisted in committed repository audit artifacts."
+      },
+      "cooccurrence_audit": {
+        "recorded": false,
+        "matrix": null,
+        "missing_reason": "Pairwise emotion co-occurrence matrix was not exported; multi-label cardinality shows 7,102 of 43,410 train comments (16.4%) have 2–5 labels.",
+        "note": "Pairwise emotion co-occurrence matrix was not exported; multi-label cardinality shows 7,102 of 43,410 train comments (16.4%) have 2–5 labels."
+      },
+      "imbalance_summary": "Severe class imbalance across 28 labels: in train, neutral appears 14,219 times vs. grief (77), pride (111), and relief (153) — a 184.7:1 head-to-tail ratio.",
+      "quality_warnings": [
+        "Severe class imbalance across 28 labels: 184.7:1 head-to-tail ratio in train (neutral: 14,219 vs. grief: 77, pride: 111, relief: 153).",
+        "Multi-label overlap: 7,102 of 43,410 train comments (16.4%) carry 2–5 simultaneous emotion labels.",
+        "Crowdworker annotations on Reddit comments reflect platform demographic/style bias and subjective annotator judgments rather than ground-truth psychological state.",
+        "Duplicate comment counts and empty/null text rates were not separately persisted in committed repository audit artifacts.",
+        "1 tokenized train comment (max 316 tokens) exceeds the 128-token DistilBERT max_sequence_cap."
+      ],
+      "samples_policy": {
+        "approved": false,
+        "reason": "Raw Reddit comment samples are not committed in repository artifacts (data/README.md prohibits raw dataset commits)."
+      }
+    }
+  }
+}

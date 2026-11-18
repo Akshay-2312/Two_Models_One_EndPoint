@@ -66,6 +66,7 @@ data/processed/
 artifacts/weights/
 artifacts/checkpoints/
 artifacts/models/
+.freebuff/
 
 # Node / Frontend
 node_modules/
@@ -86,6 +87,14 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+frontend/.eslintrc.json
+reports/PHASE_01_PROGRESS.md
+reports/PHASE_02_PROGRESS.md
+reports/SOURCE_CODE_REDTEAM_AUDIT.md
+reports/progress.md
+reports/progressFT.md
+reports/research_report.md
+sync_drive.py
 
 # Local test outputs
 *.json

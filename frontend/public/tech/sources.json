@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "generated_for": "nlp-lab",
+  "background_targets": ["#0d1320", "#141c2b"],
+  "assets": [
+    {
+      "slug": "python",
+      "file": "/tech/python.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "pytorch",
+      "file": "/tech/pytorch.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "fastapi",
+      "file": "/tech/fastapi.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "nextjs",
+      "file": "/tech/nextjs.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Preserved Next.js circular badge geometry; added explicit fill=#080c14 and subtle #f2f1ec hairline rim (stroke-opacity=0.35, stroke-width=3, r=61.5) for legibility on #0d1320/#141c2b surfaces."
+    },
+    {
+      "slug": "react",
+      "file": "/tech/react.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "typescript",
+      "file": "/tech/typescript.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "numpy",
+      "file": "/tech/numpy.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/numpy/numpy-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "scikitlearn",
+      "file": "/tech/scikitlearn.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/scikitlearn/scikitlearn-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "tailwindcss",
+      "file": "/tech/tailwindcss.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "pytest",
+      "file": "/tech/pytest.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytest/pytest-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "playwright",
+      "file": "/tech/playwright.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/playwright/playwright-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "docker",
+      "file": "/tech/docker.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "githubactions",
+      "file": "/tech/githubactions.svg",
+      "source": "Devicon",
+      "source_url": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg",
+      "license": "MIT",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": null
+    },
+    {
+      "slug": "huggingface",
+      "file": "/tech/huggingface.svg",
+      "source": "Simple Icons",
+      "source_url": "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/huggingface.svg",
+      "license": "CC0-1.0",
+      "viewBox": "0 0 24 24",
+      "dark_bg_adaptation": "Added explicit fill=#FFD21E on <path> so <img> rendering on #0d1320/#141c2b does not default to black."
+    },
+    {
+      "slug": "onnx",
+      "file": "/tech/onnx.svg",
+      "source": "Simple Icons",
+      "source_url": "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/onnx.svg",
+      "license": "CC0-1.0",
+      "viewBox": "0 0 24 24",
+      "dark_bg_adaptation": "Added explicit fill=#E8EEF8 on <path> for high-contrast <img> rendering on #0d1320/#141c2b."
+    },
+    {
+      "slug": "kaggle",
+      "file": "/tech/kaggle.svg",
+      "source": "Simple Icons",
+      "source_url": "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/kaggle.svg",
+      "license": "CC0-1.0",
+      "viewBox": "0 0 24 24",
+      "dark_bg_adaptation": "Added explicit fill=#20BEFF on <path> so <img> rendering on #0d1320/#141c2b does not default to black."
+    },
+    {
+      "slug": "gensim",
+      "file": "/tech/gensim.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #a394f8/#5fd3e0 semantic-vector constellation and #f2f1ec monogram."
+    },
+    {
+      "slug": "transformers",
+      "file": "/tech/transformers.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #a394f8/#5fd3e0 attention-routing motif and #f2f1ec monogram."
+    },
+    {
+      "slug": "safetensors",
+      "file": "/tech/safetensors.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #6fe0b2/#5fd3e0 lock-shield emblem and #f2f1ec monogram."
+    },
+    {
+      "slug": "gsap",
+      "file": "/tech/gsap.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #6fe0b2/#5fd3e0 bezier motion curve and #f2f1ec monogram."
+    },
+    {
+      "slug": "recharts",
+      "file": "/tech/recharts.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #5fd3e0/#6fe0b2 bar-and-trendline glyph and #f2f1ec monogram."
+    },
+    {
+      "slug": "uvicorn",
+      "file": "/tech/uvicorn.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #5fd3e0/#a394f8 ASGI twin-chevron glyph and #f2f1ec monogram."
+    },
+    {
+      "slug": "pydantic",
+      "file": "/tech/pydantic.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #5fd3e0/#6fe0b2 schema validation braces and #f2f1ec monogram."
+    },
+    {
+      "slug": "colab-drive",
+      "file": "/tech/colab-drive.svg",
+      "source": "NLP Lab",
+      "source_url": null,
+      "license": "Original Geometric Monogram",
+      "viewBox": "0 0 128 128",
+      "dark_bg_adaptation": "Designed on #0d1320 surface with #edc06b/#5fd3e0 prism-and-loop emblem and #f2f1ec monogram."
+    }
+  ]
+}

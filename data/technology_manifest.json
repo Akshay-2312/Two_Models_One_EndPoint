@@ -1,0 +1,732 @@
+{
+  "provenance": "Programmatically derived from repository manifests, dependency locks, Docker/CI specs, environment reports, and ONNX parity artifacts.",
+  "generated_from": [
+    "frontend/package.json",
+    "frontend/package-lock.json",
+    "frontend/components.json",
+    "frontend/styles/globals.css",
+    "frontend/public/tech/sources.json",
+    "backend/requirements.txt",
+    "configs/requirement.txt",
+    "reports/environment.json",
+    "reports/environment_requirements.txt",
+    "artifacts/models/onnx/onnx_export_manifest.json",
+    "ml/amazon_rating/inference.py",
+    "ml/go_emotions/inference.py",
+    "ml/common/onnx_export.py",
+    "backend/app/main.py",
+    "backend/app/schemas.py",
+    "docker-compose.yml",
+    "Dockerfile",
+    "frontend/Dockerfile",
+    ".github/workflows/ci.yml",
+    "sync_drive.py"
+  ],
+  "onnx_artifact_paths": [
+    "artifacts/models/onnx/amazon_bilstm.onnx",
+    "artifacts/models/onnx/goemotions_distilbert.onnx"
+  ],
+  "categories_summary": {
+    "frontend": {
+      "category": "frontend",
+      "label": "Frontend & Visualization",
+      "total": 12,
+      "verified_used": 6,
+      "verified_export_only": 0,
+      "partial": 0,
+      "declared_unused": 6
+    },
+    "backend": {
+      "category": "backend",
+      "label": "Backend API & Schemas",
+      "total": 4,
+      "verified_used": 4,
+      "verified_export_only": 0,
+      "partial": 0,
+      "declared_unused": 0
+    },
+    "ml_nlp": {
+      "category": "ml_nlp",
+      "label": "ML / NLP & Parity Export",
+      "total": 7,
+      "verified_used": 5,
+      "verified_export_only": 1,
+      "partial": 1,
+      "declared_unused": 0
+    },
+    "data": {
+      "category": "data",
+      "label": "Data Ingestion & Sync",
+      "total": 3,
+      "verified_used": 0,
+      "verified_export_only": 3,
+      "partial": 0,
+      "declared_unused": 0
+    },
+    "testing": {
+      "category": "testing",
+      "label": "Testing & Quality Gates",
+      "total": 3,
+      "verified_used": 3,
+      "verified_export_only": 0,
+      "partial": 0,
+      "declared_unused": 0
+    },
+    "deployment": {
+      "category": "deployment",
+      "label": "Containers & CI/CD",
+      "total": 2,
+      "verified_used": 2,
+      "verified_export_only": 0,
+      "partial": 0,
+      "declared_unused": 0
+    }
+  },
+  "boundaries": [
+    {
+      "id": "frontend-fastapi",
+      "title": "Frontend <-> FastAPI",
+      "source_layer": "Next.js Pages Router (:3000)",
+      "target_layer": "FastAPI + Uvicorn (:8000)",
+      "protocol_or_format": "HTTP/1.1 JSON via fetch + AbortController",
+      "inputs": [
+        "POST /predict/amazon { text }",
+        "POST /predict/go-emotions { text }",
+        "GET /readiness, /metadata, /statistics, /datasets/summary, /models/lab, /technology"
+      ],
+      "outputs": [
+        "Typed Pydantic JSON payloads (200)",
+        "Structured ErrorResponse envelopes (404, 422, 500, 503)"
+      ],
+      "security_and_resilience": "CORSMiddleware allowlist; GET requests omit Content-Type to prevent preflight overhead; 4s stall warning + 30s analyzer timeout; TextRequest forbids extra fields.",
+      "verification_sources": [
+        "frontend/lib/api.ts",
+        "backend/app/main.py",
+        "backend/app/schemas.py"
+      ]
+    },
+    {
+      "id": "fastapi-pytorch",
+      "title": "FastAPI <-> PyTorch Inference",
+      "source_layer": "FastAPI route handlers",
+      "target_layer": "AmazonInference & GoEmotionsInference (PyTorch)",
+      "protocol_or_format": "In-process Python calls -> PyTorch tensors on MODEL_DEVICE",
+      "inputs": [
+        "Validated review/comment strings",
+        "MODEL_DEVICE env var (default: cpu)",
+        "Checkpoints (w2v_bilstm_best.pt, model.safetensors)"
+      ],
+      "outputs": [
+        "5-class softmax rating & probabilities",
+        "28-label sigmoid probabilities & >=0.30 active labels"
+      ],
+      "security_and_resilience": "Lazy model initialization raising ModelNotReadyError -> 503 model_not_ready; ONNX Runtime is verified offline for logit parity only, not live serving.",
+      "verification_sources": [
+        "backend/app/main.py",
+        "ml/amazon_rating/inference.py",
+        "ml/go_emotions/inference.py"
+      ]
+    },
+    {
+      "id": "offline-notebooks-artifacts",
+      "title": "Offline Notebooks & Drive <-> Artifacts",
+      "source_layer": "Colab Notebooks (00-03) & Logical NLP Lab Workspace",
+      "target_layer": "Repository data/, reports/, artifacts/",
+      "protocol_or_format": "sync_drive.py CLI + JSON, Safetensors, NumPy & ONNX files",
+      "inputs": [
+        "Kaggle Amazon Reviews & HF GoEmotions datasets",
+        "Colab Tesla T4 training runs",
+        "PyTorch -> ONNX opset 17 export"
+      ],
+      "outputs": [
+        "data/*.json audited dataset & technology manifests",
+        "reports/metrics/*.json evaluation artifacts",
+        "artifacts/models/* checkpoints & onnx_export_manifest.json"
+      ],
+      "security_and_resilience": "Raw datasets are excluded from Git (data/README.md) and API samples return approved=false; public manifests sanitize away mounted Drive paths, Drive IDs, and personal paths.",
+      "verification_sources": [
+        "data/README.md",
+        "sync_drive.py",
+        "ml/common/onnx_export.py",
+        "artifacts/models/onnx/onnx_export_manifest.json"
+      ]
+    },
+    {
+      "id": "docker-ci",
+      "title": "Docker & GitHub Actions CI",
+      "source_layer": "Docker Compose & GitHub Actions (ubuntu-latest)",
+      "target_layer": "Backend (Python 3.11), Frontend (Node 20), Playwright Chromium",
+      "protocol_or_format": "Docker bridge (:3000 -> :8000) & 3-job CI workflow",
+      "inputs": [
+        "Dockerfile, frontend/Dockerfile, docker-compose.yml",
+        ".github/workflows/ci.yml"
+      ],
+      "outputs": [
+        "pytest backend/tests + export_openapi.py --check",
+        "frontend npm run verify (lint, typecheck, 9 contract suites, build)",
+        "Headless Playwright smoke pass against live Uvicorn & Next.js"
+      ],
+      "security_and_resilience": "CI enforces OpenAPI schema parity and frontend contract tests before running live end-to-end Playwright smoke checks.",
+      "verification_sources": [
+        "Dockerfile",
+        "frontend/Dockerfile",
+        "docker-compose.yml",
+        ".github/workflows/ci.yml"
+      ]
+    }
+  ],
+  "technologies": [
+    {
+      "id": "nextjs",
+      "name": "Next.js (Pages Router)",
+      "category": "frontend",
+      "status": "verified_used",
+      "status_note": "Active SSR/CSR web shell serving 7 routes under frontend/pages/.",
+      "version": "^14.2.5 (lockfile 14.2.35)",
+      "role": "Serves the research workbench UI across /, /analyze/*, /model-lab, /datasets, /documentation, and /technology.",
+      "communication_boundary": "Receives browser navigation and user prompts; dispatches typed HTTP/JSON requests via lib/api.ts to FastAPI (:8000).",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/package-lock.json",
+        "frontend/pages/_app.tsx",
+        "frontend/lib/api.ts"
+      ],
+      "logo_path": "/tech/nextjs.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "NEXT"
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "category": "frontend",
+      "status": "verified_used",
+      "status_note": "Active UI component runtime across all Next.js pages and providers.",
+      "version": "react ^18.3.1 / react-dom ^18.3.1",
+      "role": "Renders interactive analyzers, ReadinessProvider context, Dataset Explorer charts, and Model Lab panels.",
+      "communication_boundary": "Binds component state and AbortController lifecycles to Next.js routes and FastAPI JSON responses.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/components/ReadinessProvider.tsx",
+        "frontend/components/AnalyzerForm.tsx"
+      ],
+      "logo_path": "/tech/react.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "REA"
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "category": "frontend",
+      "status": "verified_used",
+      "status_note": "Strict TypeScript (strict: true) enforced by npm run typecheck.",
+      "version": "^5.5.3",
+      "role": "Enforces compile-time parity between frontend view models and FastAPI Pydantic schemas.",
+      "communication_boundary": "Validates request/response types across frontend/lib/api.ts and page components before build.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/tsconfig.json",
+        "frontend/lib/api.ts"
+      ],
+      "logo_path": "/tech/typescript.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "TS"
+    },
+    {
+      "id": "gsap",
+      "name": "GSAP + @gsap/react",
+      "category": "frontend",
+      "status": "verified_used",
+      "status_note": "Active motion runtime imported in 7 frontend modules with prefers-reduced-motion static fallbacks.",
+      "version": "gsap ^3.15.1 / @gsap/react ^2.1.2",
+      "role": "Drives desktop (min-width: 768px) ScrollTrigger pipeline choreography, circle route transitions, and diagram wave reveals.",
+      "communication_boundary": "Reads useReducedMotion() and scoped DOM refs; falls back cleanly to static CSS states when reduced motion is active.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/lib/motion.ts",
+        "frontend/components/PipelineTrack.tsx",
+        "frontend/components/ArchitectureMap.tsx"
+      ],
+      "logo_path": "/tech/gsap.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "GSAP"
+    },
+    {
+      "id": "recharts",
+      "name": "Recharts",
+      "category": "frontend",
+      "status": "verified_used",
+      "status_note": "Active visualization library rendering dataset charts on /datasets.",
+      "version": "^3.11.0",
+      "role": "Renders responsive SVG charts for star distributions, 28-emotion prevalence, label cardinality, and sequence length quantiles.",
+      "communication_boundary": "Consumes DatasetSummaryResponse JSON from GET /datasets/summary and renders client-mounted SVG charts.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/components/DatasetCharts.tsx",
+        "frontend/pages/datasets.tsx"
+      ],
+      "logo_path": "/tech/recharts.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "RCH"
+    },
+    {
+      "id": "lucide-react",
+      "name": "Lucide React",
+      "category": "frontend",
+      "status": "verified_used",
+      "status_note": "Active icon library across navigation, pipeline controls, and documentation UI.",
+      "version": "^0.428.0",
+      "role": "Provides inline vector UI icons across sidebar navigation, playback controls, and reference panels.",
+      "communication_boundary": "Renders deterministic inline SVGs inside React components with zero external font or icon CDN fetches.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/components/Layout.tsx",
+        "frontend/components/PipelineTrack.tsx"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "LUC"
+    },
+    {
+      "id": "tailwindcss",
+      "name": "Tailwind CSS",
+      "category": "frontend",
+      "status": "declared_unused",
+      "status_note": "Declared in frontend/package.json devDependencies and frontend/components.json, but globals.css uses token-driven custom CSS (tokens.css) with no @tailwind directives or tailwind.config.js.",
+      "version": "^3.4.6",
+      "role": "Declared CSS utility package excluded from the active custom-token CSS styling pipeline.",
+      "communication_boundary": "Not invoked in active CSS compilation; frontend/styles/globals.css imports tokens.css directly.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/components.json",
+        "frontend/styles/globals.css",
+        "frontend/DESIGN_SYSTEM.md"
+      ],
+      "logo_path": "/tech/tailwindcss.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "TW"
+    },
+    {
+      "id": "framer-motion",
+      "name": "Framer Motion",
+      "category": "frontend",
+      "status": "declared_unused",
+      "status_note": "Declared in frontend/package.json; imported only in frontend/components/ui/hero-parallax.tsx and unused in active pages. GSAP + CSS govern active application motion.",
+      "version": "^14.14.0",
+      "role": "Declared motion dependency retained in package.json; excluded from active Next.js pages.",
+      "communication_boundary": "Not imported by any active route under frontend/pages/.",
+      "verification_sources": [
+        "frontend/package.json",
+        "frontend/components/ui/hero-parallax.tsx"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "FM"
+    },
+    {
+      "id": "motion",
+      "name": "Motion (package)",
+      "category": "frontend",
+      "status": "declared_unused",
+      "status_note": "Declared in frontend/package.json with zero imports across active frontend pages or components. GSAP + CSS govern active application motion.",
+      "version": "^14.14.0",
+      "role": "Declared motion package in frontend/package.json with no active route imports.",
+      "communication_boundary": "Not imported by any active frontend page or component.",
+      "verification_sources": [
+        "frontend/package.json"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "MOT"
+    },
+    {
+      "id": "lenis",
+      "name": "Lenis",
+      "category": "frontend",
+      "status": "declared_unused",
+      "status_note": "Declared in frontend/package.json with zero imports across active frontend pages or components. Native browser scrolling is used.",
+      "version": "^1.3.27",
+      "role": "Declared smooth-scroll dependency in frontend/package.json; unused in active layouts.",
+      "communication_boundary": "Not wired into document scroll or Next.js page wrappers.",
+      "verification_sources": [
+        "frontend/package.json"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "LEN"
+    },
+    {
+      "id": "lottie-react",
+      "name": "Lottie React",
+      "category": "frontend",
+      "status": "declared_unused",
+      "status_note": "Declared in frontend/package.json with zero imports across active frontend pages or components.",
+      "version": "^3.1.2",
+      "role": "Declared Lottie player dependency in frontend/package.json; unused in active pages.",
+      "communication_boundary": "Not connected to any active component or JSON animation asset.",
+      "verification_sources": [
+        "frontend/package.json"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "LOT"
+    },
+    {
+      "id": "rive-react-canvas",
+      "name": "Rive React Canvas",
+      "category": "frontend",
+      "status": "declared_unused",
+      "status_note": "Declared in frontend/package.json with zero imports across active frontend pages or components.",
+      "version": "^4.39.0",
+      "role": "Declared Rive runtime dependency in frontend/package.json; unused in active pages.",
+      "communication_boundary": "Not connected to any active component or .riv asset.",
+      "verification_sources": [
+        "frontend/package.json"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "RIV"
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "category": "backend",
+      "status": "verified_used",
+      "status_note": "Core runtime powering FastAPI, PyTorch inference, ONNX export checks, and manifest scripts.",
+      "version": "3.11 (Docker/CI) \u00b7 3.13.16 (Colab)",
+      "role": "Executes the backend API server, ML inference wrappers, pytest suite, and deterministic repository generators.",
+      "communication_boundary": "Runs backend.app.main:app on Uvicorn and loads ml/ inference modules plus data/*.json artifacts.",
+      "verification_sources": [
+        "Dockerfile",
+        ".github/workflows/ci.yml",
+        "reports/environment.json"
+      ],
+      "logo_path": "/tech/python.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "PY"
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI",
+      "category": "backend",
+      "status": "verified_used",
+      "status_note": "Active HTTP API layer serving inference, readiness, datasets, Model Lab, and technology endpoints.",
+      "version": ">=0.110.0",
+      "role": "Exposes REST routes on :8000 with CORSMiddleware, RequestValidationError 422 handlers, and OpenAPI schema generation.",
+      "communication_boundary": "Receives HTTP/JSON from the Next.js client, validates via Pydantic, and delegates to PyTorch wrappers or data/*.json.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "backend/app/main.py",
+        "docs/openapi.json"
+      ],
+      "logo_path": "/tech/fastapi.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "FA"
+    },
+    {
+      "id": "uvicorn",
+      "name": "Uvicorn",
+      "category": "backend",
+      "status": "verified_used",
+      "status_note": "Active ASGI server used in Docker, local dev, and CI Playwright smoke runs.",
+      "version": ">=0.28.0",
+      "role": "Serves backend.app.main:app on :8000 across local, containerized, and CI verification environments.",
+      "communication_boundary": "Terminates inbound HTTP connections on :8000 and dispatches ASGI events to FastAPI.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "Dockerfile",
+        ".github/workflows/ci.yml"
+      ],
+      "logo_path": "/tech/uvicorn.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "UV"
+    },
+    {
+      "id": "pydantic",
+      "name": "Pydantic",
+      "category": "backend",
+      "status": "verified_used",
+      "status_note": "Active request/response contract enforcement driving docs/openapi.json.",
+      "version": ">=2.6.0",
+      "role": "Validates TextRequest (extra='forbid', 1..10,000 chars) and serializes typed response models across all API endpoints.",
+      "communication_boundary": "Sits at the FastAPI ingress/egress boundary, turning invalid inputs into structured 422 ErrorResponse payloads.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "backend/app/schemas.py",
+        "docs/openapi.json"
+      ],
+      "logo_path": "/tech/pydantic.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "PD"
+    },
+    {
+      "id": "pytorch",
+      "name": "PyTorch",
+      "category": "ml_nlp",
+      "status": "verified_used",
+      "status_note": "Active live inference engine on MODEL_DEVICE (cpu default); trained on Tesla T4 (2.14.1+cu130).",
+      "version": ">=2.2.0 (backend) \u00b7 2.14.1+cu130 (Colab)",
+      "role": "Trains both models in Colab and executes live inference for Amazon Word2Vec BiLSTM and GoEmotions DistilBERT.",
+      "communication_boundary": "Receives token IDs from Gensim/Transformers, runs neural forward passes, and returns probabilities to FastAPI.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "reports/environment.json",
+        "ml/amazon_rating/inference.py",
+        "ml/go_emotions/inference.py"
+      ],
+      "logo_path": "/tech/pytorch.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "PT"
+    },
+    {
+      "id": "transformers",
+      "name": "Hugging Face Transformers",
+      "category": "ml_nlp",
+      "status": "verified_used",
+      "status_note": "Active tokenizer and DistilBERT sequence classifier runtime for POST /predict/go-emotions.",
+      "version": ">=4.38.0",
+      "role": "Loads AutoTokenizer (max_length=128) and AutoModelForSequenceClassification (28 labels) from artifacts/models/distilbert_goemotions.",
+      "communication_boundary": "Converts raw text into WordPiece tensors and executes the fine-tuned DistilBERT PyTorch model.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "configs/requirement.txt",
+        "ml/go_emotions/inference.py"
+      ],
+      "logo_path": "/tech/transformers.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "HFTR"
+    },
+    {
+      "id": "safetensors",
+      "name": "Safetensors",
+      "category": "ml_nlp",
+      "status": "verified_used",
+      "status_note": "Verified model weight format (model.safetensors) served by GoEmotionsInference.",
+      "version": ">=0.4,<1",
+      "role": "Stores fine-tuned DistilBERT weights without Python pickle deserialization risk.",
+      "communication_boundary": "Streams verified weight tensors from artifacts/models/distilbert_goemotions/model.safetensors into PyTorch.",
+      "verification_sources": [
+        "configs/requirement.txt",
+        "artifacts/models/distilbert_goemotions/model.safetensors",
+        "ml/go_emotions/inference.py"
+      ],
+      "logo_path": "/tech/safetensors.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "ST"
+    },
+    {
+      "id": "gensim",
+      "name": "Gensim",
+      "category": "ml_nlp",
+      "status": "partial",
+      "status_note": "Partial dependency discrepancy: required by ml/amazon_rating/inference.py (gensim.utils.simple_preprocess) and pinned in configs/requirement.txt, but omitted from backend/requirements.txt.",
+      "version": ">=4.3,<5",
+      "role": "Trains 200-d Word2Vec Skip-gram embeddings offline and tokenizes Amazon reviews in live inference.",
+      "communication_boundary": "Normalizes raw review text (deacc=True) into token sequences prior to vocab.json ID lookup in AmazonInference.",
+      "verification_sources": [
+        "configs/requirement.txt",
+        "backend/requirements.txt",
+        "ml/amazon_rating/inference.py"
+      ],
+      "logo_path": "/tech/gensim.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "GEN"
+    },
+    {
+      "id": "numpy",
+      "name": "NumPy",
+      "category": "ml_nlp",
+      "status": "verified_used",
+      "status_note": "Active array runtime for embedding_matrix.npy loading and ONNX parity comparison.",
+      "version": ">=1.26.0",
+      "role": "Loads pretrained Word2Vec embedding matrices (vocab_size x 200) and computes max-absolute-error checks.",
+      "communication_boundary": "Bridges persisted .npy weights and tensor outputs between disk, PyTorch, and ONNX Runtime.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "ml/amazon_rating/inference.py",
+        "ml/common/onnx_export.py"
+      ],
+      "logo_path": "/tech/numpy.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "NP"
+    },
+    {
+      "id": "scikitlearn",
+      "name": "scikit-learn",
+      "category": "ml_nlp",
+      "status": "verified_used",
+      "status_note": "Verified evaluation runtime generating committed test metrics and classification reports.",
+      "version": ">=1.4.0",
+      "role": "Computes stratified splits, macro/micro/weighted F1, Hamming loss, subset accuracy, and confusion matrices.",
+      "communication_boundary": "Transforms model test predictions into reports/metrics/*.json consumed by /statistics and /models/lab.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "reports/metrics/word2vec_bilstm_test_metrics.json",
+        "reports/metrics/distilbert_goemotions_test_metrics.json"
+      ],
+      "logo_path": "/tech/scikitlearn.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "SKL"
+    },
+    {
+      "id": "onnx",
+      "name": "ONNX & ONNX Runtime",
+      "category": "ml_nlp",
+      "status": "verified_export_only",
+      "status_note": "Export & parity only (opset_version=17, CPUExecutionProvider): verified max_absolute_error 1.19e-07 (Amazon) and 3.34e-06 (GoEmotions) <= 1e-4; live FastAPI endpoints serve PyTorch directly.",
+      "version": "onnx >=1.16,<2 / onnxruntime >=1.18,<2 (opset 17)",
+      "role": "Exports both PyTorch models to .onnx graphs and verifies CPU logit parity against PyTorch references.",
+      "communication_boundary": "Consumes loaded PyTorch models in scripts/export_and_check_onnx.py and emits parity-checked .onnx artifacts.",
+      "verification_sources": [
+        "configs/requirement.txt",
+        "ml/common/onnx_export.py",
+        "scripts/export_and_check_onnx.py",
+        "artifacts/models/onnx/onnx_export_manifest.json"
+      ],
+      "logo_path": "/tech/onnx.svg",
+      "logo_license": "CC0-1.0 (Simple Icons)",
+      "monogram": "ONNX"
+    },
+    {
+      "id": "huggingface-datasets",
+      "name": "Hugging Face Datasets",
+      "category": "data",
+      "status": "verified_export_only",
+      "status_note": "Offline Notebook 00/02 corpus ingestion; raw GoEmotions records are not committed or served by FastAPI.",
+      "version": "====5.2.0",
+      "role": "Ingests google-research-datasets/go_emotions (simplified: 43,410 train / 5,426 val / 5,427 test) during Colab audits.",
+      "communication_boundary": "Fetches upstream Hub splits in Notebook 00 and outputs sanitized split audits to data/goemotions_*.json.",
+      "verification_sources": [
+        "notebooks/00_environment_and_dataset_audit.ipynb",
+        "data/dataset_explorer_summary.json",
+        "reports/environment_requirements.txt"
+      ],
+      "logo_path": "/tech/huggingface.svg",
+      "logo_license": "CC0-1.0 (Simple Icons)",
+      "monogram": "HFDS"
+    },
+    {
+      "id": "kagglehub",
+      "name": "KaggleHub",
+      "category": "data",
+      "status": "verified_export_only",
+      "status_note": "Offline Notebook 00 ingestion; raw Amazon review rows are excluded from Git and API redistribution.",
+      "version": "====1.0.3",
+      "role": "Downloads yacharki/amazon-reviews-for-sentianalysis-finegrained-csv (3M train / 650k test) in Colab.",
+      "communication_boundary": "Stages raw Kaggle CSVs into ephemeral Colab storage and emits quality summaries to data/amazon_data_quality.json.",
+      "verification_sources": [
+        "notebooks/00_environment_and_dataset_audit.ipynb",
+        "data/dataset_explorer_summary.json",
+        "reports/environment_requirements.txt"
+      ],
+      "logo_path": "/tech/kaggle.svg",
+      "logo_license": "CC0-1.0 (Simple Icons)",
+      "monogram": "KG"
+    },
+    {
+      "id": "colab-drive",
+      "name": "Google Colab & Drive Sync",
+      "category": "data",
+      "status": "verified_export_only",
+      "status_note": "Offline GPU training environment and optional sync_drive.py CLI; never invoked by FastAPI or Next.js.",
+      "version": "Colab Tesla T4 (14.56 GB VRAM)",
+      "role": "Executes training notebooks 00-03 and synchronizes sanitized manifests, figures, reports, and checkpoints locally.",
+      "communication_boundary": "Persists offline training outputs to the logical NLP Lab Workspace; sync_drive.py pulls sanitized files into the repo.",
+      "verification_sources": [
+        "reports/environment.json",
+        "sync_drive.py",
+        "notebooks/00_environment_and_dataset_audit.ipynb"
+      ],
+      "logo_path": "/tech/colab-drive.svg",
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "CLB"
+    },
+    {
+      "id": "pytest",
+      "name": "pytest (+ httpx)",
+      "category": "testing",
+      "status": "verified_used",
+      "status_note": "Active backend test runner executed locally and in CI test-backend job.",
+      "version": "pytest >=8.0.0 / httpx >=0.27.0",
+      "role": "Verifies FastAPI health, readiness, predictions, governance, Model Lab, technology manifest, and OpenAPI schema parity.",
+      "communication_boundary": "Drives FastAPI TestClient(app) via httpx against backend/app/main.py and data/*.json fixtures.",
+      "verification_sources": [
+        "backend/requirements.txt",
+        "backend/tests/test_main.py",
+        ".github/workflows/ci.yml"
+      ],
+      "logo_path": "/tech/pytest.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "PYT"
+    },
+    {
+      "id": "playwright",
+      "name": "Playwright (Chromium)",
+      "category": "testing",
+      "status": "verified_used",
+      "status_note": "Active full-stack CI smoke suite running against live Uvicorn (:8000) and Next.js (:3000).",
+      "version": "CI ephemeral install (chromium)",
+      "role": "Asserts multi-page rendering, responsive layout, zero console/page/HTTP errors, and zero Drive path leaks.",
+      "communication_boundary": "Drives headless Chromium over :3000 while Next.js communicates live with FastAPI on :8000.",
+      "verification_sources": [
+        ".github/workflows/ci.yml",
+        "frontend/scripts/ci-playwright-smoke.mjs",
+        "frontend/scripts/run-browser-qa.mjs"
+      ],
+      "logo_path": "/tech/playwright.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "PW"
+    },
+    {
+      "id": "node-contract-tests",
+      "name": "Node Contract Suite (npm run verify)",
+      "category": "testing",
+      "status": "verified_used",
+      "status_note": "Active 4-stage frontend gate: next lint, tsc --noEmit, 9 Node test suites, and next build.",
+      "version": "Node 20 / eslint ^8.57.1",
+      "role": "Enforces design system tokens, reduced-motion safety, API resilience states, and static/SSR compilation.",
+      "communication_boundary": "Runs static and contract assertions across frontend/ files inside test-frontend CI before Playwright smoke.",
+      "verification_sources": [
+        "frontend/package.json",
+        ".github/workflows/ci.yml"
+      ],
+      "logo_path": null,
+      "logo_license": "Custom monogram / text tile",
+      "monogram": "NODE"
+    },
+    {
+      "id": "docker",
+      "name": "Docker & Docker Compose",
+      "category": "deployment",
+      "status": "verified_used",
+      "status_note": "Verified multi-service container definitions (backend + frontend).",
+      "version": "python:3.11-slim + node:20-alpine",
+      "role": "Packages and runs nlp-lab-backend (:8000) and nlp-lab-frontend (:3000) with NEXT_PUBLIC_API_URL wiring.",
+      "communication_boundary": "Bridges containerized Next.js (:3000) to containerized FastAPI (:8000) with mounted repo artifacts.",
+      "verification_sources": [
+        "Dockerfile",
+        "frontend/Dockerfile",
+        "docker-compose.yml",
+        "frontend/.dockerignore"
+      ],
+      "logo_path": "/tech/docker.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "DOC"
+    },
+    {
+      "id": "githubactions",
+      "name": "GitHub Actions CI",
+      "category": "deployment",
+      "status": "verified_used",
+      "status_note": "Active 3-job workflow (test-backend, test-frontend, playwright-smoke) on main/master.",
+      "version": "ubuntu-latest \u00b7 Python 3.11 / Node 20",
+      "role": "Automates pytest, OpenAPI drift verification, frontend npm run verify, and live Chromium smoke checks.",
+      "communication_boundary": "Triggers on pushes and PRs to main/master, gating merges on backend, frontend, and end-to-end checks.",
+      "verification_sources": [
+        ".github/workflows/ci.yml"
+      ],
+      "logo_path": "/tech/githubactions.svg",
+      "logo_license": "MIT (Devicon)",
+      "monogram": "GHA"
+    }
+  ]
+}

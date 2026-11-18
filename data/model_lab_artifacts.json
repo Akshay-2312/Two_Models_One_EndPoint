@@ -1,0 +1,826 @@
+{
+  "provenance": "Notebooks 01–02, reports/metrics/*.json, artifacts/models/*",
+  "run_timestamp_note": "Notebook 00 session timestamp: 2026-11-13. Individual model run ISO timestamps were not serialized inside metric JSONs.",
+  "comparison": [
+    {
+      "dimension": "Representation",
+      "amazon_rating": "Word2Vec Skip-gram (sg=1, 200-d, window=5, min_count=3, negative=10, 5 epochs) + Gensim simple_preprocess(deacc=True); vocab 80,002 (<PAD>=0, <UNK>=1); max_len=256",
+      "go_emotions": "DistilBERT WordPiece tokenizer (distilbert-base-uncased, BertTokenizer, vocab 30,522, do_lower_case=true); max_length=128"
+    },
+    {
+      "dimension": "Architecture",
+      "amazon_rating": "2-layer Bidirectional LSTM (embed_dim=200, hidden_dim=128, 256 concat, dropout=0.3) + Linear(256, 5)",
+      "go_emotions": "DistilBertForSequenceClassification (6 layers, 12 heads, dim=768, hidden_dim=3072, GELU, seq_classif_dropout=0.2)"
+    },
+    {
+      "dimension": "Task type",
+      "amazon_rating": "Five-class review rating classification (1–5 stars, mutually exclusive)",
+      "go_emotions": "Multi-label emotion classification (27 emotions + neutral = 28 independent binary labels)"
+    },
+    {
+      "dimension": "Output classes/labels",
+      "amazon_rating": "5 classes: 1 star, 2 stars, 3 stars, 4 stars, 5 stars",
+      "go_emotions": "28 labels (27 emotion categories + neutral); multiple labels per comment allowed"
+    },
+    {
+      "dimension": "Inference contract",
+      "amazon_rating": "POST /predict/amazon -> { rating: int (1..5), probabilities: float[5] } via softmax",
+      "go_emotions": "POST /predict/go-emotions -> { emotions: [{ label, probability }], probabilities: Record<string, float>, threshold: float } via independent sigmoid >= 0.30"
+    },
+    {
+      "dimension": "Total parameters",
+      "amazon_rating": "16,734,869 (100% trainable)",
+      "go_emotions": "66,975,004 (100% trainable)"
+    },
+    {
+      "dimension": "Loss & optimizer",
+      "amazon_rating": "CrossEntropyLoss + AdamW (lr=1e-3, grad_clip=1.0, batch_size=64, 3 epochs)",
+      "go_emotions": "BCEWithLogitsLoss + AdamW (lr=2e-5, weight_decay=0.01, grad_clip=1.0, batch_size=16, 3 epochs)"
+    },
+    {
+      "dimension": "Checkpoints & ONNX export status",
+      "amazon_rating": "w2v_bilstm_best.pt + amazon_bilstm.onnx exported; ONNX parity verified (max_abs_err=1.19e-07 <= 1e-4)",
+      "go_emotions": "model.safetensors + goemotions_distilbert.onnx exported; ONNX parity verified (max_abs_err=3.34e-06 <= 1e-4)"
+    }
+  ],
+  "tracks": {
+    "amazon_rating": {
+      "id": "amazon_rating",
+      "name": "Amazon Rating Word2Vec + BiLSTM",
+      "task": "Five-class review rating classification (1–5 stars)",
+      "architecture": "Word2Vec Skip-gram + 2-layer Bidirectional LSTM",
+      "endpoint": "POST /predict/amazon",
+      "runtime": "PyTorch with ONNX parity export",
+      "pipeline_steps": [
+        {
+          "id": "raw_amazon_reviews",
+          "order": 1,
+          "title": "Raw Amazon Reviews",
+          "status": "completed",
+          "description": "Ingested full Amazon Reviews corpus (3,000,000 train rows and 650,000 test rows across 5 balanced star-rating classes: 600,000 per class in train, 130,000 per class in test).",
+          "inputs": [
+            "train_chunk_0.parquet .. train_chunk_5.parquet",
+            "test_chunk_0.parquet .. test_chunk_1.parquet"
+          ],
+          "output_artifact": "data/amazon_data_quality.json",
+          "provenance": "notebooks/00_environment_and_dataset_audit.ipynb, data/amazon_data_quality.json"
+        },
+        {
+          "id": "dataset_audit_deduplication",
+          "order": 2,
+          "title": "Dataset audit / deduplication",
+          "status": "not_available",
+          "description": "Schema, class balance, and null counts (188 review_title nulls in train, 26 in test, 0 review_text nulls) were audited in Notebook 00, while exact and near-duplicate counts were not exported to committed audit artifacts.",
+          "inputs": [
+            "train.csv",
+            "test.csv"
+          ],
+          "output_artifact": "data/dataset_explorer_summary.json",
+          "provenance": "data/dataset_explorer_summary.json"
+        },
+        {
+          "id": "train_val_test_split",
+          "order": 3,
+          "title": "Train / validation / test split",
+          "status": "completed",
+          "description": "Stratified sample of 100,000 rows per rating class (500,000 total) split 90/10 into 450,000 training and 50,000 validation rows (seed=42), plus 50,000 sampled test rows from the 650,000-row test corpus.",
+          "inputs": [
+            "train_chunk_0.parquet",
+            "train_chunk_1.parquet",
+            "test_chunk_0.parquet",
+            "test_chunk_1.parquet"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/amazon_processed_data/train_sampled.parquet, val_sampled.parquet, test_sampled.parquet",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cells 2 & 12"
+        },
+        {
+          "id": "text_preprocessing_tokenization",
+          "order": 4,
+          "title": "Text preprocessing / tokenization",
+          "status": "completed",
+          "description": "Concatenated review_title + ' [SEP] ' + review_text, tokenized with Gensim simple_preprocess(deacc=True), filtered 252,587 unique words by min_count >= 3 capped at 80,000 words plus <PAD>=0 and <UNK>=1 (vocab_size=80,002), padded/truncated to max_len=256.",
+          "inputs": [
+            "train_sampled.parquet"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/vocab.json",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cells 2, 3, 6; ml/amazon_rating/inference.py"
+        },
+        {
+          "id": "word2vec_skipgram_training",
+          "order": 5,
+          "title": "Word2Vec Skip-gram training",
+          "status": "completed",
+          "description": "Trained Gensim Word2Vec Skip-gram on training tokens only (sg=1, vector_size=200, window=5, min_count=3, negative=10, workers=4, epochs=5) in 2055.02 seconds, producing 88,917 word vectors.",
+          "inputs": [
+            "train_sampled.parquet (tokenized)"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/amazon_word2vec_skipgram.model",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cell 4"
+        },
+        {
+          "id": "embedding_matrix",
+          "order": 6,
+          "title": "Embedding matrix",
+          "status": "completed",
+          "description": "Built (80002, 200) float32 embedding matrix: index 0 (<PAD>) strictly zeroed, index 1 (<UNK>) initialized via N(0, 0.1^2) with seed=42, and all 80,000/80,000 vocabulary words populated from Word2Vec.",
+          "inputs": [
+            "vocab.json",
+            "amazon_word2vec_skipgram.model"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/embedding_matrix.npy",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cell 5"
+        },
+        {
+          "id": "bidirectional_lstm_classifier",
+          "order": 7,
+          "title": "Bidirectional LSTM classifier",
+          "status": "completed",
+          "description": "Trainable nn.Embedding(80002, 200, padding_idx=0) feeding a 2-layer bidirectional LSTM (hidden_dim=128, 256 concatenated final forward/backward states, dropout=0.3), totaling 16,734,869 trainable parameters, trained for 3 epochs with AdamW(lr=1e-3) and CrossEntropyLoss alongside a random-init baseline.",
+          "inputs": [
+            "embedding_matrix.npy",
+            "train_sampled.parquet",
+            "val_sampled.parquet"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/w2v_bilstm_best.pt",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cells 7–11; ml/amazon_rating/inference.py"
+        },
+        {
+          "id": "five_rating_logits_probabilities",
+          "order": 8,
+          "title": "Five rating logits / probabilities",
+          "status": "completed",
+          "description": "Projects dropout-regularized 256-d BiLSTM state through Linear(256, 5) to produce 5 rating logits, normalized with torch.softmax(logits, dim=1) into 1–5 star class probabilities.",
+          "inputs": [
+            "BiLSTM hidden_concat (batch, 256)"
+          ],
+          "output_artifact": "ml/amazon_rating/inference.py",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cell 7; ml/amazon_rating/inference.py"
+        },
+        {
+          "id": "validation_test_evaluation",
+          "order": 9,
+          "title": "Validation & test evaluation",
+          "status": "completed",
+          "description": "Evaluated best Word2Vec BiLSTM checkpoint (epoch 2) on 50,000 test reviews: Accuracy 0.5357, Macro-F1 0.5337, Weighted-F1 0.5335, MAE 0.6225 (vs random-init baseline Acc 0.5379, Macro-F1 0.5333, MAE 0.6299).",
+          "inputs": [
+            "w2v_bilstm_best.pt",
+            "baseline_bilstm_best.pt",
+            "test_sampled.parquet"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/final_test_metrics.json, w2v_classification_report.json",
+          "provenance": "notebooks/01_amazon_word2vec_bilstm.ipynb Cells 12–13; reports/metrics/word2vec_bilstm_test_metrics.json"
+        },
+        {
+          "id": "saved_model_artifacts",
+          "order": 10,
+          "title": "Saved model artifacts",
+          "status": "completed",
+          "description": "Persisted PyTorch weights, vocabulary, embedding matrix, metric JSONs, confusion matrix figure, and ONNX export verified within 1e-4 parity tolerance (max_absolute_error=1.19e-07).",
+          "inputs": [
+            "w2v_bilstm_best.pt",
+            "vocab.json",
+            "embedding_matrix.npy"
+          ],
+          "output_artifact": "artifacts/models/word2vec_bilstm/* & artifacts/models/onnx/amazon_bilstm.onnx",
+          "provenance": "artifacts/unified_model_manifest.json, artifacts/models/onnx/onnx_export_manifest.json"
+        },
+        {
+          "id": "fastapi_inference_endpoint",
+          "order": 11,
+          "title": "FastAPI inference endpoint",
+          "status": "completed",
+          "description": "Serves live single-text rating prediction via POST /predict/amazon using AmazonInference (max_len=256, softmax probabilities across 1–5 stars).",
+          "inputs": [
+            "TextRequest { text }"
+          ],
+          "output_artifact": "backend/app/main.py -> POST /predict/amazon",
+          "provenance": "backend/app/main.py, ml/amazon_rating/inference.py"
+        }
+      ],
+      "hyperparameters": {
+        "word2vec": {
+          "sg": 1,
+          "vector_size": 200,
+          "window": 5,
+          "min_count": 3,
+          "negative": 10,
+          "workers": 4,
+          "epochs": 5,
+          "training_seconds": 2055.02,
+          "trained_wv_vectors": 88917
+        },
+        "classifier": {
+          "vocab_size": 80002,
+          "max_vocab_words": 80000,
+          "min_word_count": 3,
+          "max_len": 256,
+          "embed_dim": 200,
+          "hidden_dim": 128,
+          "bidirectional_hidden_dim": 256,
+          "num_layers": 2,
+          "bidirectional": true,
+          "dropout": 0.3,
+          "num_classes": 5,
+          "total_parameters": 16734869,
+          "trainable_parameters": 16734869,
+          "batch_size": 64,
+          "epochs": 3,
+          "learning_rate": 0.001,
+          "optimizer": "AdamW",
+          "loss": "CrossEntropyLoss",
+          "grad_clip_max_norm": 1.0,
+          "patience": 2,
+          "random_seed": 42
+        }
+      },
+      "run_timestamp": null,
+      "run_timestamp_note": "Notebook 00 session timestamp: 2026-11-13. Individual model run ISO timestamps were not serialized inside metric JSONs.",
+      "epochs": {
+        "provenance": "artifacts/models/word2vec_bilstm/w2v_bilstm_history.json, baseline_bilstm_history.json, and notebooks/01_amazon_word2vec_bilstm.ipynb Cells 10–11",
+        "word2vec_best_epoch": 2,
+        "baseline_best_epoch": 3,
+        "word2vec": [
+          {
+            "epoch": 1,
+            "train_loss": 1.1835485799863206,
+            "val_loss": 1.0965181465648934,
+            "val_macro_f1": 0.5139368541117634,
+            "duration_seconds": 361
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.0403608533472195,
+            "val_loss": 1.0674980625776989,
+            "val_macro_f1": 0.5341940746038168,
+            "duration_seconds": 356
+          },
+          {
+            "epoch": 3,
+            "train_loss": 0.9550441163374838,
+            "val_loss": 1.0912883448631256,
+            "val_macro_f1": 0.5302929094224768,
+            "duration_seconds": 355
+          }
+        ],
+        "baseline": [
+          {
+            "epoch": 1,
+            "train_loss": 1.2094593935469176,
+            "val_loss": 1.1147130906124554,
+            "val_macro_f1": 0.5022708054080004,
+            "duration_seconds": 357
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.0594997561205097,
+            "val_loss": 1.0724854152983108,
+            "val_macro_f1": 0.5325836439161753,
+            "duration_seconds": 355
+          },
+          {
+            "epoch": 3,
+            "train_loss": 0.993458955581549,
+            "val_loss": 1.0664449069658508,
+            "val_macro_f1": 0.5335880892470817,
+            "duration_seconds": 354
+          }
+        ]
+      },
+      "test_metrics": {
+        "baseline": {
+          "accuracy": 0.53792,
+          "macro_f1": 0.533336786388513,
+          "weighted_f1": 0.5331558079415434,
+          "mae": 0.62986
+        },
+        "word2vec": {
+          "accuracy": 0.53574,
+          "macro_f1": 0.5336841879916191,
+          "weighted_f1": 0.5335072606545553,
+          "mae": 0.62246
+        }
+      },
+      "per_class_report": {
+        "1 star": {
+          "precision": 0.5976310439317599,
+          "recall": 0.6806604248464714,
+          "f1-score": 0.6364492139696885,
+          "support": 9933.0
+        },
+        "2 stars": {
+          "precision": 0.469605180697723,
+          "recall": 0.4502754131196795,
+          "f1-score": 0.4597372053785981,
+          "support": 9985.0
+        },
+        "3 stars": {
+          "precision": 0.4689523405158688,
+          "recall": 0.44074221867517954,
+          "f1-score": 0.4544098740035999,
+          "support": 10024.0
+        },
+        "4 stars": {
+          "precision": 0.500153515505066,
+          "recall": 0.4863170464722858,
+          "f1-score": 0.49313824419778,
+          "support": 10049.0
+        },
+        "5 stars": {
+          "precision": 0.6274569095857272,
+          "recall": 0.6219402537716056,
+          "f1-score": 0.6246864024084295,
+          "support": 10009.0
+        },
+        "accuracy": 0.53574,
+        "macro avg": {
+          "precision": 0.532759798047229,
+          "recall": 0.5359870713770444,
+          "f1-score": 0.5336841879916191,
+          "support": 50000.0
+        },
+        "weighted avg": {
+          "precision": 0.5326462807065192,
+          "recall": 0.53574,
+          "f1-score": 0.5335072606545553,
+          "support": 50000.0
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "1 star",
+          "2 stars",
+          "3 stars",
+          "4 stars",
+          "5 stars"
+        ],
+        "matrix": [
+          [6761, 2168, 490, 118, 396],
+          [2757, 4496, 2026, 357, 349],
+          [960, 2310, 4418, 1734, 602],
+          [411, 426, 1976, 4887, 2349],
+          [424, 174, 511, 2675, 6225]
+        ],
+        "source": "reports/figures/amazon_confusion_matrix.png",
+        "confusion_matrix_figure": "reports/figures/amazon_confusion_matrix.png"
+      },
+      "onnx_parity": {
+        "onnx_path": "artifacts/models/onnx/amazon_bilstm.onnx",
+        "max_absolute_error": 1.1920928955078125e-07,
+        "tolerance": 0.0001,
+        "within_tolerance": true,
+        "pytorch_shape": [1, 5],
+        "onnx_shape": [1, 5]
+      },
+      "sha256": "c6a6773f7e453f29bdec6ffeeddb82f687999e85347b96e2e9cf4aca0a7c4210",
+      "artifact_files": [
+        "artifacts/models/word2vec_bilstm/w2v_bilstm_best.pt",
+        "artifacts/models/word2vec_bilstm/baseline_bilstm_best.pt",
+        "artifacts/models/word2vec_bilstm/vocab.json",
+        "artifacts/models/word2vec_bilstm/embedding_matrix.npy",
+        "artifacts/models/word2vec_bilstm/amazon_word2vec_skipgram.model",
+        "artifacts/models/word2vec_bilstm/final_test_metrics.json",
+        "artifacts/models/word2vec_bilstm/w2v_bilstm_history.json",
+        "artifacts/models/word2vec_bilstm/baseline_bilstm_history.json",
+        "artifacts/models/word2vec_bilstm/w2v_classification_report.json",
+        "artifacts/models/onnx/amazon_bilstm.onnx",
+        "artifacts/models/onnx/amazon_bilstm.onnx.data",
+        "artifacts/models/onnx/amazon_parity.json",
+        "reports/figures/amazon_confusion_matrix.png"
+      ]
+    },
+    "go_emotions": {
+      "id": "go_emotions",
+      "name": "GoEmotions DistilBERT",
+      "task": "Multi-label emotion classification (27 emotions + neutral = 28 labels)",
+      "architecture": "Fine-tuned DistilBERT (DistilBertForSequenceClassification)",
+      "endpoint": "POST /predict/go-emotions",
+      "runtime": "PyTorch with ONNX parity export",
+      "pipeline_steps": [
+        {
+          "id": "goemotions_raw_dataset",
+          "order": 1,
+          "title": "GoEmotions raw dataset",
+          "status": "completed",
+          "description": "Loaded HuggingFace google-research-datasets/go_emotions (simplified config) totaling 54,263 Reddit comments with text, labels, and id columns.",
+          "inputs": [
+            "google-research-datasets/go_emotions (simplified)"
+          ],
+          "output_artifact": "data/goemotions_data_quality.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cell 1"
+        },
+        {
+          "id": "dataset_audit_label_mapping",
+          "order": 2,
+          "title": "Dataset audit / label mapping",
+          "status": "completed",
+          "description": "Mapped 28 labels (27 emotions + neutral) to 28-d float32 multi-hot vectors and audited 184.7:1 train class imbalance (neutral 14,219 vs grief 77) and schema. Note: duplicate and null counts were not exported to committed audit JSONs.",
+          "inputs": [
+            "go_emotions train/validation/test features"
+          ],
+          "output_artifact": "artifacts/goemotions_config.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cells 1–2; data/dataset_explorer_summary.json"
+        },
+        {
+          "id": "train_val_test_split",
+          "order": 3,
+          "title": "Train / validation / test split",
+          "status": "completed",
+          "description": "Preserved official GoEmotions simplified splits: 43,410 train, 5,426 validation, and 5,427 test examples (54,263 total).",
+          "inputs": [
+            "go_emotions DatasetDict"
+          ],
+          "output_artifact": "data/goemotions_data_quality.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cell 1; data/goemotions_data_quality.json"
+        },
+        {
+          "id": "distilbert_tokenizer",
+          "order": 4,
+          "title": "DistilBERT tokenizer",
+          "status": "completed",
+          "description": "Applied distilbert/distilbert-base-uncased BertTokenizer (vocab_size=30,522, do_lower_case=true) with padding='max_length', truncation=True, max_length=128 (only 1 train example of max 316 tokens exceeded 128; mean 19.17).",
+          "inputs": [
+            "distilbert/distilbert-base-uncased",
+            "go_emotions text splits"
+          ],
+          "output_artifact": "artifacts/models/distilbert_goemotions/tokenizer.json, tokenizer_config.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cells 3–4; artifacts/models/distilbert_goemotions/tokenizer_config.json"
+        },
+        {
+          "id": "finetune_distilbert",
+          "order": 5,
+          "title": "Fine-tune DistilBERT",
+          "status": "completed",
+          "description": "Fine-tuned DistilBertForSequenceClassification (6 layers, 12 heads, dim=768, 66,975,004 parameters) for 3 epochs with BCEWithLogitsLoss, AdamW(lr=2e-5, weight_decay=0.01), batch_size=16, and grad_clip=1.0.",
+          "inputs": [
+            "tokenized train_loader (2,714 batches)",
+            "tokenized val_loader (340 batches)"
+          ],
+          "output_artifact": "artifacts/models/distilbert_goemotions/model.safetensors, config.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cells 5–6; artifacts/goemotions_config.json"
+        },
+        {
+          "id": "sigmoid_scores",
+          "order": 6,
+          "title": "28 sigmoid scores",
+          "status": "completed",
+          "description": "Applies torch.sigmoid(logits) independently to each of the 28 output logits so multiple emotion labels can activate concurrently.",
+          "inputs": [
+            "DistilBERT logits (batch, 28)"
+          ],
+          "output_artifact": "ml/go_emotions/inference.py",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cells 6–8; ml/go_emotions/inference.py"
+        },
+        {
+          "id": "threshold_selection",
+          "order": 7,
+          "title": "Threshold-based multi-label selection",
+          "status": "completed",
+          "description": "Swept global probability thresholds 0.1–0.9 on validation set; selected optimal_threshold=0.30 maximizing Val Macro-F1 at 0.4960 (up from 0.4531 at 0.50).",
+          "inputs": [
+            "val_loader sigmoid probabilities"
+          ],
+          "output_artifact": "artifacts/models/distilbert_goemotions/thresholds.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cell 7; artifacts/goemotions_thresholds.json"
+        },
+        {
+          "id": "validation_test_evaluation",
+          "order": 8,
+          "title": "Validation & test evaluation",
+          "status": "completed",
+          "description": "Evaluated on 5,427 held-out test comments at threshold 0.30: Macro-F1 0.4839, Micro-F1 0.5917, Hamming Loss 0.0361, Subset Accuracy 0.4183.",
+          "inputs": [
+            "test_loader (340 batches)",
+            "thresholds.json"
+          ],
+          "output_artifact": "artifacts/models/distilbert_goemotions/final_test_metrics.json",
+          "provenance": "notebooks/02_goemotions_distilbert.ipynb Cell 8; reports/metrics/distilbert_goemotions_test_metrics.json"
+        },
+        {
+          "id": "saved_model_artifacts",
+          "order": 9,
+          "title": "Saved model artifacts",
+          "status": "completed",
+          "description": "Persisted safetensors weights, config, thresholds, tokenizer files, final metrics, and ONNX export verified within 1e-4 parity tolerance (max_absolute_error=3.34e-06).",
+          "inputs": [
+            "model.safetensors",
+            "config.json",
+            "thresholds.json",
+            "tokenizer.json"
+          ],
+          "output_artifact": "artifacts/models/distilbert_goemotions/* & artifacts/models/onnx/goemotions_distilbert.onnx",
+          "provenance": "artifacts/unified_model_manifest.json, artifacts/models/onnx/onnx_export_manifest.json"
+        },
+        {
+          "id": "fastapi_inference_endpoint",
+          "order": 10,
+          "title": "FastAPI inference endpoint",
+          "status": "completed",
+          "description": "Serves live multi-label emotion prediction via POST /predict/go-emotions using GoEmotionsInference (max_length=128, independent sigmoid scores filtered by threshold=0.30).",
+          "inputs": [
+            "TextRequest { text }"
+          ],
+          "output_artifact": "backend/app/main.py -> POST /predict/go-emotions",
+          "provenance": "backend/app/main.py, ml/go_emotions/inference.py"
+        }
+      ],
+      "hyperparameters": {
+        "model_name": "distilbert/distilbert-base-uncased",
+        "architecture": "DistilBertForSequenceClassification",
+        "problem_type": "multi_label_classification",
+        "tokenizer_class": "BertTokenizer",
+        "vocab_size": 30522,
+        "do_lower_case": true,
+        "max_length": 128,
+        "model_max_length": 512,
+        "n_layers": 6,
+        "n_heads": 12,
+        "dim": 768,
+        "hidden_dim": 3072,
+        "dropout": 0.1,
+        "attention_dropout": 0.1,
+        "seq_classif_dropout": 0.2,
+        "num_labels": 28,
+        "total_parameters": 66975004,
+        "trainable_parameters": 66975004,
+        "batch_size": 16,
+        "epochs": 3,
+        "learning_rate": 2e-05,
+        "weight_decay": 0.01,
+        "optimizer": "AdamW",
+        "loss": "BCEWithLogitsLoss",
+        "grad_clip_max_norm": 1.0,
+        "optimal_threshold": 0.30000000000000004
+      },
+      "run_timestamp": null,
+      "run_timestamp_note": "Notebook 00 session timestamp: 2026-11-13. Individual model run ISO timestamps were not serialized inside metric JSONs.",
+      "epochs": {
+        "history_json_exported": false,
+        "provenance": "notebooks/02_goemotions_distilbert.ipynb Cell 6",
+        "note": "Epoch metrics were printed in Notebook 02 Cell 6 stdout (validation monitored at default 0.5 threshold); a standalone history JSON was not exported.",
+        "items": [
+          {
+            "epoch": 1,
+            "train_loss": 0.1196,
+            "val_loss": 0.0876,
+            "val_macro_f1": 0.2917,
+            "val_micro_f1": 0.5244,
+            "duration_seconds": 511
+          },
+          {
+            "epoch": 2,
+            "train_loss": 0.0828,
+            "val_loss": 0.0855,
+            "val_macro_f1": 0.4174,
+            "val_micro_f1": 0.5638,
+            "duration_seconds": 512
+          },
+          {
+            "epoch": 3,
+            "train_loss": 0.0715,
+            "val_loss": 0.0856,
+            "val_macro_f1": 0.4531,
+            "val_micro_f1": 0.5803,
+            "duration_seconds": 512
+          }
+        ]
+      },
+      "threshold_sweep": {
+        "provenance": "notebooks/02_goemotions_distilbert.ipynb Cell 7",
+        "optimal_threshold": 0.30000000000000004,
+        "best_val_macro_f1": 0.4960432966250499,
+        "points": [
+          { "threshold": 0.1, "val_macro_f1": 0.4596 },
+          { "threshold": 0.2, "val_macro_f1": 0.4946 },
+          { "threshold": 0.3, "val_macro_f1": 0.4960 },
+          { "threshold": 0.4, "val_macro_f1": 0.4809 },
+          { "threshold": 0.5, "val_macro_f1": 0.4531 },
+          { "threshold": 0.6, "val_macro_f1": 0.4092 },
+          { "threshold": 0.7, "val_macro_f1": 0.3748 },
+          { "threshold": 0.8, "val_macro_f1": 0.3062 },
+          { "threshold": 0.9, "val_macro_f1": 0.1751 }
+        ]
+      },
+      "test_metrics": {
+        "test_macro_f1": 0.48394947055717247,
+        "test_micro_f1": 0.5917212626563431,
+        "hamming_loss": 0.03608939429834952,
+        "subset_accuracy": 0.4182789754929058,
+        "optimal_threshold": 0.30000000000000004
+      },
+      "per_label_report": {
+        "admiration": {
+          "precision": 0.5759668508287292,
+          "recall": 0.8273809523809523,
+          "f1-score": 0.6791530944625407,
+          "support": 504.0
+        },
+        "amusement": {
+          "precision": 0.7710437710437711,
+          "recall": 0.8674242424242424,
+          "f1-score": 0.8163992869875223,
+          "support": 264.0
+        },
+        "anger": {
+          "precision": 0.45248868778280543,
+          "recall": 0.5050505050505051,
+          "f1-score": 0.477326968973747,
+          "support": 198.0
+        },
+        "annoyance": {
+          "precision": 0.33791208791208793,
+          "recall": 0.384375,
+          "f1-score": 0.35964912280701755,
+          "support": 320.0
+        },
+        "approval": {
+          "precision": 0.43214285714285716,
+          "recall": 0.34472934472934474,
+          "f1-score": 0.38351822503961963,
+          "support": 351.0
+        },
+        "caring": {
+          "precision": 0.5555555555555556,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.4166666666666667,
+          "support": 135.0
+        },
+        "confusion": {
+          "precision": 0.33935018050541516,
+          "recall": 0.6143790849673203,
+          "f1-score": 0.4372093023255814,
+          "support": 153.0
+        },
+        "curiosity": {
+          "precision": 0.45964125560538116,
+          "recall": 0.721830985915493,
+          "f1-score": 0.5616438356164384,
+          "support": 284.0
+        },
+        "desire": {
+          "precision": 0.6271186440677966,
+          "recall": 0.4457831325301205,
+          "f1-score": 0.5211267605633803,
+          "support": 83.0
+        },
+        "disappointment": {
+          "precision": 0.3284671532846715,
+          "recall": 0.2980132450331126,
+          "f1-score": 0.3125,
+          "support": 151.0
+        },
+        "disapproval": {
+          "precision": 0.35353535353535354,
+          "recall": 0.5243445692883895,
+          "f1-score": 0.42232277526395173,
+          "support": 267.0
+        },
+        "disgust": {
+          "precision": 0.5038759689922481,
+          "recall": 0.5284552845528455,
+          "f1-score": 0.5158730158730159,
+          "support": 123.0
+        },
+        "embarrassment": {
+          "precision": 0.7368421052631579,
+          "recall": 0.3783783783783784,
+          "f1-score": 0.5,
+          "support": 37.0
+        },
+        "excitement": {
+          "precision": 0.3805970149253731,
+          "recall": 0.49514563106796117,
+          "f1-score": 0.43037974683544306,
+          "support": 103.0
+        },
+        "fear": {
+          "precision": 0.5789473684210527,
+          "recall": 0.7051282051282052,
+          "f1-score": 0.6358381502890174,
+          "support": 78.0
+        },
+        "gratitude": {
+          "precision": 0.8944444444444445,
+          "recall": 0.9147727272727273,
+          "f1-score": 0.9044943820224719,
+          "support": 352.0
+        },
+        "grief": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 6.0
+        },
+        "joy": {
+          "precision": 0.5760869565217391,
+          "recall": 0.6583850931677019,
+          "f1-score": 0.6144927536231884,
+          "support": 161.0
+        },
+        "love": {
+          "precision": 0.7394366197183099,
+          "recall": 0.8823529411764706,
+          "f1-score": 0.8045977011494253,
+          "support": 238.0
+        },
+        "nervousness": {
+          "precision": 0.3684210526315789,
+          "recall": 0.30434782608695654,
+          "f1-score": 0.3333333333333333,
+          "support": 23.0
+        },
+        "optimism": {
+          "precision": 0.5076923076923077,
+          "recall": 0.532258064516129,
+          "f1-score": 0.5196850393700787,
+          "support": 186.0
+        },
+        "pride": {
+          "precision": 0.6666666666666666,
+          "recall": 0.125,
+          "f1-score": 0.21052631578947367,
+          "support": 16.0
+        },
+        "realization": {
+          "precision": 0.43333333333333335,
+          "recall": 0.1793103448275862,
+          "f1-score": 0.25365853658536586,
+          "support": 145.0
+        },
+        "relief": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 11.0
+        },
+        "remorse": {
+          "precision": 0.5494505494505495,
+          "recall": 0.8928571428571429,
+          "f1-score": 0.6802721088435374,
+          "support": 56.0
+        },
+        "sadness": {
+          "precision": 0.5154639175257731,
+          "recall": 0.6410256410256411,
+          "f1-score": 0.5714285714285714,
+          "support": 156.0
+        },
+        "surprise": {
+          "precision": 0.5138888888888888,
+          "recall": 0.524822695035461,
+          "f1-score": 0.519298245614035,
+          "support": 141.0
+        },
+        "neutral": {
+          "precision": 0.6476439790575916,
+          "recall": 0.6922216004476777,
+          "f1-score": 0.6691912361374087,
+          "support": 1787.0
+        },
+        "micro avg": {
+          "precision": 0.559481909052513,
+          "recall": 0.6279033022594407,
+          "f1-score": 0.5917212626563431,
+          "support": 6329.0
+        },
+        "macro avg": {
+          "precision": 0.4945004846713371,
+          "recall": 0.5114680703997748,
+          "f1-score": 0.48394947055717247,
+          "support": 6329.0
+        },
+        "weighted avg": {
+          "precision": 0.5642780011528186,
+          "recall": 0.6279033022594407,
+          "f1-score": 0.5867205500368011,
+          "support": 6329.0
+        },
+        "samples avg": {
+          "precision": 0.5889994472084025,
+          "recall": 0.6511577912904613,
+          "f1-score": 0.5973097475585037,
+          "support": 6329.0
+        }
+      },
+      "onnx_parity": {
+        "onnx_path": "artifacts/models/onnx/goemotions_distilbert.onnx",
+        "max_absolute_error": 3.337860107421875e-06,
+        "tolerance": 0.0001,
+        "within_tolerance": true,
+        "pytorch_shape": [1, 28],
+        "onnx_shape": [1, 28]
+      },
+      "sha256": "ae0a3058b444e0380aeba5043c568af46d2c9544f289aa56eaff13f3901e72f5",
+      "artifact_files": [
+        "artifacts/models/distilbert_goemotions/model.safetensors",
+        "artifacts/models/distilbert_goemotions/config.json",
+        "artifacts/models/distilbert_goemotions/thresholds.json",
+        "artifacts/models/distilbert_goemotions/tokenizer.json",
+        "artifacts/models/distilbert_goemotions/tokenizer_config.json",
+        "artifacts/models/distilbert_goemotions/final_test_metrics.json",
+        "artifacts/models/onnx/goemotions_distilbert.onnx",
+        "artifacts/models/onnx/goemotions_distilbert.onnx.data",
+        "artifacts/models/onnx/goemotions_parity.json"
+      ]
+    }
+  }
+}

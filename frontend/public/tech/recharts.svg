@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Recharts</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0d1320" stroke="#5fd3e0" stroke-opacity="0.45" stroke-width="3"/>
+  <rect x="30" y="44" width="14" height="20" rx="3" fill="#5fd3e0" fill-opacity="0.75"/>
+  <rect x="50" y="32" width="14" height="32" rx="3" fill="#5fd3e0"/>
+  <rect x="70" y="24" width="14" height="40" rx="3" fill="#9beaf2"/>
+  <path d="M88 40 L98 24" stroke="#6fe0b2" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="98" cy="24" r="5" fill="#6fe0b2"/>
+  <text x="64" y="102" text-anchor="middle" fill="#f2f1ec" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="1.5">RC</text>
+</svg>

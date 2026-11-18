@@ -1,0 +1,12 @@
+{
+  "splits": {
+    "train": 43410,
+    "validation": 5426,
+    "test": 5427
+  },
+  "features": {
+    "text": "Value('string')",
+    "labels": "List(ClassLabel(names=['admiration', 'amusement', 'anger', 'annoyance', 'approval', 'caring', 'confusion', 'curiosity', 'desire', 'disappointment', 'disapproval', 'disgust', 'embarrassment', 'excitement', 'fear', 'gratitude', 'grief', 'joy', 'love', 'nervousness', 'optimism', 'pride', 'realization', 'relief', 'remorse', 'sadness', 'surprise', 'neutral']))",
+    "id": "Value('string')"
+  }
+}

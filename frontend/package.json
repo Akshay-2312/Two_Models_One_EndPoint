@@ -1,0 +1,50 @@
+{
+  "name": "nlp-lab-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:motion && npm run test:storage && npm run test:entry && npm run test:design && npm run test:api-states && npm run test:analyzers && npm run test:datasets && npm run test:model-lab && npm run test:documentation && npm run test:technology",
+    "test:motion": "node scripts/test-motion.mjs",
+    "test:storage": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-storage.mjs",
+    "test:entry": "node scripts/test-entry.mjs",
+    "test:design": "node scripts/test-design-system.mjs",
+    "test:api-states": "node scripts/test-api-states.mjs",
+    "test:analyzers": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-analyzers.mjs",
+    "test:datasets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-datasets.mjs",
+    "test:model-lab": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-model-lab.mjs",
+    "test:documentation": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-documentation.mjs",
+    "test:technology": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-technology.mjs",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@rive-app/react-canvas": "^4.39.0",
+    "framer-motion": "^14.14.0",
+    "gsap": "^3.15.1",
+    "lenis": "^1.3.27",
+    "lottie-react": "^3.1.2",
+    "lucide-react": "^0.428.0",
+    "motion": "^14.14.0",
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.35",
+    "eslint-plugin-react": "^7.37.5",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3"
+  }
+}

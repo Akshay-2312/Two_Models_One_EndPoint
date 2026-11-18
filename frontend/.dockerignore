@@ -1,0 +1,5 @@
+node_modules
+.next
+.env*.local
+auto_qa_tests
+npm-debug.log*

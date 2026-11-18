@@ -1,0 +1,94 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/main/schemas/plan.schema.json",
+  "projectId": "nlp-lab",
+  "type": "frontend",
+  "name": "NLP Lab Sentiment and Emotion Analyzer E2E Flow",
+  "targetUrl": "http://localhost:3000",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "navigate to http://localhost:3000/"
+    },
+    {
+      "type": "action",
+      "description": "click 'Skip'"
+    },
+    {
+      "type": "assertion",
+      "description": "verify 'Both models ready' is visible"
+    },
+    {
+      "type": "action",
+      "description": "click 'Sentiment Analyzer'"
+    },
+    {
+      "type": "assertion",
+      "description": "verify URL contains '/analyze/sentiment'"
+    },
+    {
+      "type": "action",
+      "description": "click 'Analyze sentiment'"
+    },
+    {
+      "type": "assertion",
+      "description": "verify 'Input required' is visible"
+    },
+    {
+      "type": "action",
+      "description": "click '5-star positive'"
+    },
+    {
+      "type": "action",
+      "description": "click 'Analyze sentiment'"
+    },
+    {
+      "type": "assertion",
+      "description": "verify 'Analyzed review' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "verify '1 star' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "verify '2 stars' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "verify '3 stars' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "verify '4 stars' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "verify '5 stars' is visible"
+    },
+    {
+      "type": "action",
+      "description": "click 'Emotion Analyzer'"
+    },
+    {
+      "type": "assertion",
+      "description": "verify URL contains '/analyze/emotions'"
+    },
+    {
+      "type": "action",
+      "description": "click 'Admiration / gratitude'"
+    },
+    {
+      "type": "action",
+      "description": "click 'Analyze emotions'"
+    },
+    {
+      "type": "assertion",
+      "description": "verify 'Selected multi-label detections' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "verify 'Active threshold' is visible"
+    }
+  ]
+}

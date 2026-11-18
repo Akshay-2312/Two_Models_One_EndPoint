@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Gensim</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0d1320" stroke="#a394f8" stroke-opacity="0.45" stroke-width="3"/>
+  <g stroke="#a394f8" stroke-width="4" stroke-linecap="round">
+    <line x1="38" y1="54" x2="64" y2="30"/>
+    <line x1="64" y1="30" x2="90" y2="52"/>
+    <line x1="38" y1="54" x2="90" y2="52" stroke="#5fd3e0" stroke-opacity="0.75"/>
+  </g>
+  <circle cx="38" cy="54" r="7" fill="#5fd3e0"/>
+  <circle cx="64" cy="30" r="8" fill="#a394f8"/>
+  <circle cx="90" cy="52" r="7" fill="#c3b8ff"/>
+  <text x="64" y="102" text-anchor="middle" fill="#f2f1ec" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="1.5">GS</text>
+</svg>

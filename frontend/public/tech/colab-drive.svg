@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Google Colab &amp; Drive</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0d1320" stroke="#edc06b" stroke-opacity="0.45" stroke-width="3"/>
+  <polygon points="64,22 92,62 36,62" fill="none" stroke="#edc06b" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="54" cy="46" r="8" fill="none" stroke="#5fd3e0" stroke-width="4.5"/>
+  <circle cx="74" cy="46" r="8" fill="none" stroke="#edc06b" stroke-width="4.5"/>
+  <text x="64" y="102" text-anchor="middle" fill="#f2f1ec" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="1.5">CD</text>
+</svg>

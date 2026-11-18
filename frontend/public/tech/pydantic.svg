@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Pydantic</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0d1320" stroke="#5fd3e0" stroke-opacity="0.45" stroke-width="3"/>
+  <path d="M40 24 C32 24 32 32 32 38 C32 42 26 44 26 44 C26 44 32 46 32 50 C32 56 32 64 40 64" fill="none" stroke="#5fd3e0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M88 24 C96 24 96 32 96 38 C96 42 102 44 102 44 C102 44 96 46 96 50 C96 56 96 64 88 64" fill="none" stroke="#5fd3e0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M52 45 L61 54 L78 35" fill="none" stroke="#6fe0b2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="64" y="102" text-anchor="middle" fill="#f2f1ec" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="1.5">PD</text>
+</svg>

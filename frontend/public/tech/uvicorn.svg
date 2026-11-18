@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Uvicorn</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0d1320" stroke="#5fd3e0" stroke-opacity="0.45" stroke-width="3"/>
+  <path d="M30 46 L52 28 L74 46" fill="none" stroke="#5fd3e0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M54 56 L76 38 L98 56" fill="none" stroke="#a394f8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="64" y="102" text-anchor="middle" fill="#f2f1ec" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="1.5">UV</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Transformers</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0d1320" stroke="#a394f8" stroke-opacity="0.45" stroke-width="3"/>
+  <g fill="none" stroke-width="4" stroke-linecap="round">
+    <rect x="26" y="24" width="22" height="14" rx="4" fill="#a394f8" fill-opacity="0.22" stroke="#a394f8"/>
+    <rect x="53" y="24" width="22" height="14" rx="4" fill="#5fd3e0" fill-opacity="0.22" stroke="#5fd3e0"/>
+    <rect x="80" y="24" width="22" height="14" rx="4" fill="#a394f8" fill-opacity="0.22" stroke="#a394f8"/>
+    <path d="M37 38 C37 52, 64 46, 64 60" stroke="#a394f8"/>
+    <path d="M64 38 L64 60" stroke="#5fd3e0"/>
+    <path d="M91 38 C91 52, 64 46, 64 60" stroke="#c3b8ff"/>
+  </g>
+  <text x="64" y="102" text-anchor="middle" fill="#f2f1ec" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="34" font-weight="700" letter-spacing="1.5">TF</text>
+</svg>

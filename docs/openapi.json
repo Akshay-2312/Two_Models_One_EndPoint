@@ -1,0 +1,2124 @@
+{
+  "components": {
+    "schemas": {
+      "AmazonConfusionMatrix": {
+        "properties": {
+          "confusion_matrix_figure": {
+            "title": "Confusion Matrix Figure",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "matrix": {
+            "anyOf": [
+              {
+                "items": {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matrix"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "labels",
+          "source",
+          "confusion_matrix_figure"
+        ],
+        "title": "AmazonConfusionMatrix",
+        "type": "object"
+      },
+      "AmazonEpochEntry": {
+        "properties": {
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "epoch": {
+            "minimum": 1.0,
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "train_loss": {
+            "title": "Train Loss",
+            "type": "number"
+          },
+          "val_loss": {
+            "title": "Val Loss",
+            "type": "number"
+          },
+          "val_macro_f1": {
+            "title": "Val Macro F1",
+            "type": "number"
+          }
+        },
+        "required": [
+          "epoch",
+          "train_loss",
+          "val_loss",
+          "val_macro_f1"
+        ],
+        "title": "AmazonEpochEntry",
+        "type": "object"
+      },
+      "AmazonEpochHistory": {
+        "properties": {
+          "baseline": {
+            "items": {
+              "$ref": "#/components/schemas/AmazonEpochEntry"
+            },
+            "title": "Baseline",
+            "type": "array"
+          },
+          "baseline_best_epoch": {
+            "title": "Baseline Best Epoch",
+            "type": "integer"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          },
+          "word2vec": {
+            "items": {
+              "$ref": "#/components/schemas/AmazonEpochEntry"
+            },
+            "title": "Word2Vec",
+            "type": "array"
+          },
+          "word2vec_best_epoch": {
+            "title": "Word2Vec Best Epoch",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provenance",
+          "word2vec_best_epoch",
+          "baseline_best_epoch",
+          "word2vec",
+          "baseline"
+        ],
+        "title": "AmazonEpochHistory",
+        "type": "object"
+      },
+      "AmazonPrediction": {
+        "properties": {
+          "probabilities": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 5,
+            "minItems": 5,
+            "title": "Probabilities",
+            "type": "array"
+          },
+          "rating": {
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Rating",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rating",
+          "probabilities"
+        ],
+        "title": "AmazonPrediction",
+        "type": "object"
+      },
+      "AmazonTestMetrics": {
+        "properties": {
+          "baseline": {
+            "$ref": "#/components/schemas/AmazonTestMetricsGroup"
+          },
+          "word2vec": {
+            "$ref": "#/components/schemas/AmazonTestMetricsGroup"
+          }
+        },
+        "required": [
+          "baseline",
+          "word2vec"
+        ],
+        "title": "AmazonTestMetrics",
+        "type": "object"
+      },
+      "AmazonTestMetricsGroup": {
+        "properties": {
+          "accuracy": {
+            "title": "Accuracy",
+            "type": "number"
+          },
+          "macro_f1": {
+            "title": "Macro F1",
+            "type": "number"
+          },
+          "mae": {
+            "title": "Mae",
+            "type": "number"
+          },
+          "weighted_f1": {
+            "title": "Weighted F1",
+            "type": "number"
+          }
+        },
+        "required": [
+          "accuracy",
+          "macro_f1",
+          "weighted_f1",
+          "mae"
+        ],
+        "title": "AmazonTestMetricsGroup",
+        "type": "object"
+      },
+      "AmazonTrackMetadata": {
+        "properties": {
+          "architecture": {
+            "title": "Architecture",
+            "type": "string"
+          },
+          "artifact_files": {
+            "items": {
+              "$ref": "#/components/schemas/ArtifactFileStatus"
+            },
+            "title": "Artifact Files",
+            "type": "array"
+          },
+          "confusion_matrix": {
+            "$ref": "#/components/schemas/AmazonConfusionMatrix"
+          },
+          "endpoint": {
+            "title": "Endpoint",
+            "type": "string"
+          },
+          "epochs": {
+            "$ref": "#/components/schemas/AmazonEpochHistory"
+          },
+          "hyperparameters": {
+            "additionalProperties": true,
+            "title": "Hyperparameters",
+            "type": "object"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "onnx_parity": {
+            "$ref": "#/components/schemas/OnnxParityStatus"
+          },
+          "per_class_report": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ClassificationReportEntry"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "title": "Per Class Report",
+            "type": "object"
+          },
+          "pipeline_steps": {
+            "items": {
+              "$ref": "#/components/schemas/PipelineStep"
+            },
+            "title": "Pipeline Steps",
+            "type": "array"
+          },
+          "readiness": {
+            "$ref": "#/components/schemas/ModelReadiness"
+          },
+          "run_timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Timestamp"
+          },
+          "run_timestamp_note": {
+            "title": "Run Timestamp Note",
+            "type": "string"
+          },
+          "runtime": {
+            "title": "Runtime",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "task": {
+            "title": "Task",
+            "type": "string"
+          },
+          "test_metrics": {
+            "$ref": "#/components/schemas/AmazonTestMetrics"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "task",
+          "architecture",
+          "endpoint",
+          "runtime",
+          "pipeline_steps",
+          "hyperparameters",
+          "run_timestamp_note",
+          "epochs",
+          "test_metrics",
+          "per_class_report",
+          "confusion_matrix",
+          "onnx_parity",
+          "sha256",
+          "artifact_files",
+          "readiness"
+        ],
+        "title": "AmazonTrackMetadata",
+        "type": "object"
+      },
+      "ArtifactFileStatus": {
+        "properties": {
+          "exists": {
+            "title": "Exists",
+            "type": "boolean"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "size_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Bytes"
+          }
+        },
+        "required": [
+          "path",
+          "exists"
+        ],
+        "title": "ArtifactFileStatus",
+        "type": "object"
+      },
+      "ClassificationReportEntry": {
+        "properties": {
+          "f1-score": {
+            "title": "F1-Score",
+            "type": "number"
+          },
+          "precision": {
+            "title": "Precision",
+            "type": "number"
+          },
+          "recall": {
+            "title": "Recall",
+            "type": "number"
+          },
+          "support": {
+            "title": "Support",
+            "type": "number"
+          }
+        },
+        "required": [
+          "precision",
+          "recall",
+          "f1-score",
+          "support"
+        ],
+        "title": "ClassificationReportEntry",
+        "type": "object"
+      },
+      "DatasetCooccurrenceAudit": {
+        "properties": {
+          "matrix": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matrix"
+          },
+          "missing_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Missing Reason"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "recorded": {
+            "title": "Recorded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "recorded",
+          "note"
+        ],
+        "title": "DatasetCooccurrenceAudit",
+        "type": "object"
+      },
+      "DatasetDuplicatesAudit": {
+        "properties": {
+          "duplicate_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Count"
+          },
+          "missing_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Missing Reason"
+          },
+          "near_duplicate_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Near Duplicate Count"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "recorded": {
+            "title": "Recorded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "recorded",
+          "note"
+        ],
+        "title": "DatasetDuplicatesAudit",
+        "type": "object"
+      },
+      "DatasetSampleItem": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "split": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Split"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "DatasetSampleItem",
+        "type": "object"
+      },
+      "DatasetSamplesPolicy": {
+        "properties": {
+          "approved": {
+            "title": "Approved",
+            "type": "boolean"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approved",
+          "reason"
+        ],
+        "title": "DatasetSamplesPolicy",
+        "type": "object"
+      },
+      "DatasetSamplesResponse": {
+        "properties": {
+          "approved": {
+            "title": "Approved",
+            "type": "boolean"
+          },
+          "dataset_id": {
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DatasetSampleItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "notice": {
+            "title": "Notice",
+            "type": "string"
+          },
+          "page": {
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "total_available": {
+            "minimum": 0.0,
+            "title": "Total Available",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "dataset_id",
+          "approved",
+          "notice",
+          "total_available",
+          "page",
+          "page_size",
+          "items"
+        ],
+        "title": "DatasetSamplesResponse",
+        "type": "object"
+      },
+      "DatasetSummaryItem": {
+        "properties": {
+          "class_distribution": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Class Distribution"
+          },
+          "class_prevalence": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Class Prevalence"
+          },
+          "cooccurrence_audit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetCooccurrenceAudit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "duplicates_audit": {
+            "$ref": "#/components/schemas/DatasetDuplicatesAudit"
+          },
+          "imbalance_summary": {
+            "title": "Imbalance Summary",
+            "type": "string"
+          },
+          "label_semantics": {
+            "title": "Label Semantics",
+            "type": "string"
+          },
+          "labels_per_example": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Labels Per Example"
+          },
+          "last_audit_date": {
+            "title": "Last Audit Date",
+            "type": "string"
+          },
+          "mirror_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror Url"
+          },
+          "missing_values": {
+            "additionalProperties": true,
+            "title": "Missing Values",
+            "type": "object"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "paper_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paper Url"
+          },
+          "quality_warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Quality Warnings",
+            "type": "array"
+          },
+          "samples_policy": {
+            "$ref": "#/components/schemas/DatasetSamplesPolicy"
+          },
+          "schema": {
+            "additionalProperties": true,
+            "title": "Schema",
+            "type": "object"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "splits": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Splits",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "task": {
+            "title": "Task",
+            "type": "string"
+          },
+          "text_length_stats": {
+            "additionalProperties": true,
+            "title": "Text Length Stats",
+            "type": "object"
+          }
+        },
+        "required": [
+          "name",
+          "task",
+          "label_semantics",
+          "source_url",
+          "status",
+          "last_audit_date",
+          "splits",
+          "schema",
+          "missing_values",
+          "text_length_stats",
+          "duplicates_audit",
+          "imbalance_summary",
+          "quality_warnings",
+          "samples_policy"
+        ],
+        "title": "DatasetSummaryItem",
+        "type": "object"
+      },
+      "DatasetSummaryResponse": {
+        "properties": {
+          "datasets": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DatasetSummaryItem"
+            },
+            "title": "Datasets",
+            "type": "object"
+          },
+          "last_audit_date": {
+            "title": "Last Audit Date",
+            "type": "string"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provenance",
+          "last_audit_date",
+          "datasets"
+        ],
+        "title": "DatasetSummaryResponse",
+        "type": "object"
+      },
+      "EmotionPrediction": {
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "probability": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Probability",
+            "type": "number"
+          }
+        },
+        "required": [
+          "label",
+          "probability"
+        ],
+        "title": "EmotionPrediction",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "error": {
+            "title": "Error",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "GoEmotionsEpochEntry": {
+        "properties": {
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "epoch": {
+            "minimum": 1.0,
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "train_loss": {
+            "title": "Train Loss",
+            "type": "number"
+          },
+          "val_loss": {
+            "title": "Val Loss",
+            "type": "number"
+          },
+          "val_macro_f1": {
+            "title": "Val Macro F1",
+            "type": "number"
+          },
+          "val_micro_f1": {
+            "title": "Val Micro F1",
+            "type": "number"
+          }
+        },
+        "required": [
+          "epoch",
+          "train_loss",
+          "val_loss",
+          "val_macro_f1",
+          "val_micro_f1"
+        ],
+        "title": "GoEmotionsEpochEntry",
+        "type": "object"
+      },
+      "GoEmotionsEpochHistory": {
+        "properties": {
+          "history_json_exported": {
+            "title": "History Json Exported",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/GoEmotionsEpochEntry"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "required": [
+          "history_json_exported",
+          "provenance",
+          "note",
+          "items"
+        ],
+        "title": "GoEmotionsEpochHistory",
+        "type": "object"
+      },
+      "GoEmotionsPrediction": {
+        "properties": {
+          "emotions": {
+            "items": {
+              "$ref": "#/components/schemas/EmotionPrediction"
+            },
+            "title": "Emotions",
+            "type": "array"
+          },
+          "probabilities": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Probabilities",
+            "type": "object"
+          },
+          "threshold": {
+            "exclusiveMaximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Threshold",
+            "type": "number"
+          }
+        },
+        "required": [
+          "emotions",
+          "probabilities",
+          "threshold"
+        ],
+        "title": "GoEmotionsPrediction",
+        "type": "object"
+      },
+      "GoEmotionsTestMetrics": {
+        "properties": {
+          "hamming_loss": {
+            "title": "Hamming Loss",
+            "type": "number"
+          },
+          "optimal_threshold": {
+            "title": "Optimal Threshold",
+            "type": "number"
+          },
+          "subset_accuracy": {
+            "title": "Subset Accuracy",
+            "type": "number"
+          },
+          "test_macro_f1": {
+            "title": "Test Macro F1",
+            "type": "number"
+          },
+          "test_micro_f1": {
+            "title": "Test Micro F1",
+            "type": "number"
+          }
+        },
+        "required": [
+          "test_macro_f1",
+          "test_micro_f1",
+          "hamming_loss",
+          "subset_accuracy",
+          "optimal_threshold"
+        ],
+        "title": "GoEmotionsTestMetrics",
+        "type": "object"
+      },
+      "GoEmotionsThresholdSweep": {
+        "properties": {
+          "best_val_macro_f1": {
+            "title": "Best Val Macro F1",
+            "type": "number"
+          },
+          "optimal_threshold": {
+            "title": "Optimal Threshold",
+            "type": "number"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/ThresholdSweepPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provenance",
+          "optimal_threshold",
+          "best_val_macro_f1",
+          "points"
+        ],
+        "title": "GoEmotionsThresholdSweep",
+        "type": "object"
+      },
+      "GoEmotionsTrackMetadata": {
+        "properties": {
+          "architecture": {
+            "title": "Architecture",
+            "type": "string"
+          },
+          "artifact_files": {
+            "items": {
+              "$ref": "#/components/schemas/ArtifactFileStatus"
+            },
+            "title": "Artifact Files",
+            "type": "array"
+          },
+          "endpoint": {
+            "title": "Endpoint",
+            "type": "string"
+          },
+          "epochs": {
+            "$ref": "#/components/schemas/GoEmotionsEpochHistory"
+          },
+          "hyperparameters": {
+            "additionalProperties": true,
+            "title": "Hyperparameters",
+            "type": "object"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "onnx_parity": {
+            "$ref": "#/components/schemas/OnnxParityStatus"
+          },
+          "per_label_report": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ClassificationReportEntry"
+            },
+            "title": "Per Label Report",
+            "type": "object"
+          },
+          "pipeline_steps": {
+            "items": {
+              "$ref": "#/components/schemas/PipelineStep"
+            },
+            "title": "Pipeline Steps",
+            "type": "array"
+          },
+          "readiness": {
+            "$ref": "#/components/schemas/ModelReadiness"
+          },
+          "run_timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Timestamp"
+          },
+          "run_timestamp_note": {
+            "title": "Run Timestamp Note",
+            "type": "string"
+          },
+          "runtime": {
+            "title": "Runtime",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "task": {
+            "title": "Task",
+            "type": "string"
+          },
+          "test_metrics": {
+            "$ref": "#/components/schemas/GoEmotionsTestMetrics"
+          },
+          "threshold_sweep": {
+            "$ref": "#/components/schemas/GoEmotionsThresholdSweep"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "task",
+          "architecture",
+          "endpoint",
+          "runtime",
+          "pipeline_steps",
+          "hyperparameters",
+          "run_timestamp_note",
+          "epochs",
+          "threshold_sweep",
+          "test_metrics",
+          "per_label_report",
+          "onnx_parity",
+          "sha256",
+          "artifact_files",
+          "readiness"
+        ],
+        "title": "GoEmotionsTrackMetadata",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "MetadataResponse": {
+        "properties": {
+          "models": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Models",
+            "type": "object"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "version",
+          "models"
+        ],
+        "title": "MetadataResponse",
+        "type": "object"
+      },
+      "ModelComparisonRow": {
+        "properties": {
+          "amazon_rating": {
+            "title": "Amazon Rating",
+            "type": "string"
+          },
+          "dimension": {
+            "title": "Dimension",
+            "type": "string"
+          },
+          "go_emotions": {
+            "title": "Go Emotions",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dimension",
+          "amazon_rating",
+          "go_emotions"
+        ],
+        "title": "ModelComparisonRow",
+        "type": "object"
+      },
+      "ModelLabResponse": {
+        "properties": {
+          "comparison": {
+            "items": {
+              "$ref": "#/components/schemas/ModelComparisonRow"
+            },
+            "title": "Comparison",
+            "type": "array"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          },
+          "run_timestamp_note": {
+            "title": "Run Timestamp Note",
+            "type": "string"
+          },
+          "tracks": {
+            "$ref": "#/components/schemas/ModelLabTracks"
+          }
+        },
+        "required": [
+          "provenance",
+          "run_timestamp_note",
+          "comparison",
+          "tracks"
+        ],
+        "title": "ModelLabResponse",
+        "type": "object"
+      },
+      "ModelLabTracks": {
+        "properties": {
+          "amazon_rating": {
+            "$ref": "#/components/schemas/AmazonTrackMetadata"
+          },
+          "go_emotions": {
+            "$ref": "#/components/schemas/GoEmotionsTrackMetadata"
+          }
+        },
+        "required": [
+          "amazon_rating",
+          "go_emotions"
+        ],
+        "title": "ModelLabTracks",
+        "type": "object"
+      },
+      "ModelReadiness": {
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "ready": {
+            "title": "Ready",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ready"
+        ],
+        "title": "ModelReadiness",
+        "type": "object"
+      },
+      "OnnxParityStatus": {
+        "properties": {
+          "max_absolute_error": {
+            "title": "Max Absolute Error",
+            "type": "number"
+          },
+          "onnx_path": {
+            "title": "Onnx Path",
+            "type": "string"
+          },
+          "onnx_shape": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Onnx Shape",
+            "type": "array"
+          },
+          "pytorch_shape": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Pytorch Shape",
+            "type": "array"
+          },
+          "tolerance": {
+            "title": "Tolerance",
+            "type": "number"
+          },
+          "within_tolerance": {
+            "title": "Within Tolerance",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "onnx_path",
+          "max_absolute_error",
+          "tolerance",
+          "within_tolerance",
+          "pytorch_shape",
+          "onnx_shape"
+        ],
+        "title": "OnnxParityStatus",
+        "type": "object"
+      },
+      "PipelineStep": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "inputs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Inputs",
+            "type": "array"
+          },
+          "order": {
+            "minimum": 1.0,
+            "title": "Order",
+            "type": "integer"
+          },
+          "output_artifact": {
+            "title": "Output Artifact",
+            "type": "string"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "planned",
+              "completed",
+              "skipped",
+              "failed",
+              "unknown",
+              "not_available"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "order",
+          "title",
+          "status",
+          "description",
+          "inputs",
+          "output_artifact",
+          "provenance"
+        ],
+        "title": "PipelineStep",
+        "type": "object"
+      },
+      "ReadinessResponse": {
+        "properties": {
+          "models": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ModelReadiness"
+            },
+            "title": "Models",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "models"
+        ],
+        "title": "ReadinessResponse",
+        "type": "object"
+      },
+      "StatisticsResponse": {
+        "properties": {
+          "datasets": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Datasets",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Metrics",
+            "type": "object"
+          }
+        },
+        "required": [
+          "datasets",
+          "metrics"
+        ],
+        "title": "StatisticsResponse",
+        "type": "object"
+      },
+      "TechnologyBoundary": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "inputs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Inputs",
+            "type": "array"
+          },
+          "outputs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Outputs",
+            "type": "array"
+          },
+          "protocol_or_format": {
+            "title": "Protocol Or Format",
+            "type": "string"
+          },
+          "security_and_resilience": {
+            "title": "Security And Resilience",
+            "type": "string"
+          },
+          "source_layer": {
+            "title": "Source Layer",
+            "type": "string"
+          },
+          "target_layer": {
+            "title": "Target Layer",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "verification_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Verification Sources",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "source_layer",
+          "target_layer",
+          "protocol_or_format",
+          "inputs",
+          "outputs",
+          "security_and_resilience",
+          "verification_sources"
+        ],
+        "title": "TechnologyBoundary",
+        "type": "object"
+      },
+      "TechnologyCategorySummary": {
+        "properties": {
+          "category": {
+            "enum": [
+              "frontend",
+              "backend",
+              "ml_nlp",
+              "data",
+              "testing",
+              "deployment"
+            ],
+            "title": "Category",
+            "type": "string"
+          },
+          "declared_unused": {
+            "minimum": 0.0,
+            "title": "Declared Unused",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "partial": {
+            "minimum": 0.0,
+            "title": "Partial",
+            "type": "integer"
+          },
+          "total": {
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          },
+          "verified_export_only": {
+            "minimum": 0.0,
+            "title": "Verified Export Only",
+            "type": "integer"
+          },
+          "verified_used": {
+            "minimum": 0.0,
+            "title": "Verified Used",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "category",
+          "label",
+          "total",
+          "verified_used",
+          "verified_export_only",
+          "partial",
+          "declared_unused"
+        ],
+        "title": "TechnologyCategorySummary",
+        "type": "object"
+      },
+      "TechnologyItem": {
+        "properties": {
+          "category": {
+            "enum": [
+              "frontend",
+              "backend",
+              "ml_nlp",
+              "data",
+              "testing",
+              "deployment"
+            ],
+            "title": "Category",
+            "type": "string"
+          },
+          "communication_boundary": {
+            "title": "Communication Boundary",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "logo_license": {
+            "enum": [
+              "MIT (Devicon)",
+              "CC0-1.0 (Simple Icons)",
+              "Custom monogram / text tile"
+            ],
+            "title": "Logo License",
+            "type": "string"
+          },
+          "logo_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Path"
+          },
+          "monogram": {
+            "maxLength": 4,
+            "minLength": 2,
+            "title": "Monogram",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "verified_used",
+              "verified_export_only",
+              "partial",
+              "declared_unused"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "status_note": {
+            "title": "Status Note",
+            "type": "string"
+          },
+          "verification_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Verification Sources",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "category",
+          "status",
+          "status_note",
+          "version",
+          "role",
+          "communication_boundary",
+          "verification_sources",
+          "logo_license",
+          "monogram"
+        ],
+        "title": "TechnologyItem",
+        "type": "object"
+      },
+      "TechnologyManifestResponse": {
+        "properties": {
+          "api_version": {
+            "title": "Api Version",
+            "type": "string"
+          },
+          "boundaries": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyBoundary"
+            },
+            "title": "Boundaries",
+            "type": "array"
+          },
+          "categories_summary": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TechnologyCategorySummary"
+            },
+            "propertyNames": {
+              "enum": [
+                "frontend",
+                "backend",
+                "ml_nlp",
+                "data",
+                "testing",
+                "deployment"
+              ]
+            },
+            "title": "Categories Summary",
+            "type": "object"
+          },
+          "generated_from": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Generated From",
+            "type": "array"
+          },
+          "onnx_artifact_paths": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Onnx Artifact Paths",
+            "type": "array"
+          },
+          "onnx_artifacts_expected": {
+            "minimum": 0.0,
+            "title": "Onnx Artifacts Expected",
+            "type": "integer"
+          },
+          "onnx_artifacts_present": {
+            "minimum": 0.0,
+            "title": "Onnx Artifacts Present",
+            "type": "integer"
+          },
+          "provenance": {
+            "title": "Provenance",
+            "type": "string"
+          },
+          "readiness": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ModelReadiness"
+            },
+            "title": "Readiness",
+            "type": "object"
+          },
+          "technologies": {
+            "items": {
+              "$ref": "#/components/schemas/TechnologyItem"
+            },
+            "title": "Technologies",
+            "type": "array"
+          }
+        },
+        "required": [
+          "provenance",
+          "generated_from",
+          "onnx_artifact_paths",
+          "api_version",
+          "readiness",
+          "onnx_artifacts_present",
+          "onnx_artifacts_expected",
+          "categories_summary",
+          "boundaries",
+          "technologies"
+        ],
+        "title": "TechnologyManifestResponse",
+        "type": "object"
+      },
+      "TextRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "TextRequest",
+        "type": "object"
+      },
+      "ThresholdSweepPoint": {
+        "properties": {
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "val_macro_f1": {
+            "title": "Val Macro F1",
+            "type": "number"
+          }
+        },
+        "required": [
+          "threshold",
+          "val_macro_f1"
+        ],
+        "title": "ThresholdSweepPoint",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Inference and evaluation API for NLP models",
+    "title": "NLP Lab API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "health_check__get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Check  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Check"
+      }
+    },
+    "/datasets/summary": {
+      "get": {
+        "operationId": "datasets_summary_datasets_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetSummaryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Datasets Summary"
+      }
+    },
+    "/datasets/{dataset_id}/samples": {
+      "get": {
+        "operationId": "dataset_samples_datasets__dataset_id__samples_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dataset_id",
+            "required": true,
+            "schema": {
+              "title": "Dataset Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetSamplesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Dataset Samples"
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/metadata": {
+      "get": {
+        "operationId": "metadata_metadata_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetadataResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Metadata"
+      }
+    },
+    "/models/lab": {
+      "get": {
+        "operationId": "models_lab_models_lab_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelLabResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Models Lab"
+      }
+    },
+    "/predict/amazon": {
+      "post": {
+        "operationId": "predict_amazon_predict_amazon_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AmazonPrediction"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Predict Amazon"
+      }
+    },
+    "/predict/go-emotions": {
+      "post": {
+        "operationId": "predict_go_emotions_predict_go_emotions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoEmotionsPrediction"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Predict Go Emotions"
+      }
+    },
+    "/readiness": {
+      "get": {
+        "operationId": "readiness_readiness_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Readiness"
+      }
+    },
+    "/statistics": {
+      "get": {
+        "operationId": "statistics_statistics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatisticsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Statistics"
+      }
+    },
+    "/technology": {
+      "get": {
+        "operationId": "technology_stack_technology_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyManifestResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Technology Stack"
+      }
+    }
+  }
+}
